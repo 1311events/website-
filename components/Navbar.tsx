@@ -12,7 +12,7 @@ const navLinks = [
   { label: "Services", href: "/services" },
   { label: "Gallery", href: "/gallery" },
   { label: "Venues", href: "/venues" },
-  { label: "Seafood Distribution", href: "/seafood" },
+  { label: "Seafood & Caviar", href: "/seafood" },
   { label: "Contact", href: "/contact" },
 ];
 
