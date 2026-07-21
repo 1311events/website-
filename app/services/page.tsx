@@ -1,26 +1,19 @@
 import Link from "next/link";
-import ContactForm from "@/components/ContactForm";
-import { ArrowRight, ExternalLink } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight } from "lucide-react";
 
 export const metadata = {
   title: "Services — 1311 Events",
   description: "Thoughtful Planning. Flawless Execution. Full-service event solutions in Hawaii.",
 };
 
-const PlaceholderImg = ({ className = "", label = "" }: { className?: string; label?: string }) => (
-  <div className={`flex items-center justify-center text-xs text-center text-white/15 ${className}`}
-    style={{ backgroundColor: "#1a1a18" }}>
-    <div><p>[ Photo ]</p>{label && <p className="mt-1 text-[10px]">{label}</p>}</div>
-  </div>
-);
-
 const tiles = [
-  { num: "01", label: "Equipments", href: "#rentals" },
-  { num: "02", label: "Professionals", href: "#coordination" },
-  { num: "03", label: "Design & Décor", href: "#decor" },
-  { num: "04", label: "Catering & Bar", href: "#catering" },
-  { num: "05", label: "Corporate / Nonprofit Events", href: "#corporate" },
-  { num: "06", label: "Luxury Wedding, Corporate, Birthdays Event", href: "#luxury" },
+  { num: "01", label: "Equipments", href: "#rentals", image: "/images/home/equipments.jpg" },
+  { num: "02", label: "Professionals", href: "/contact", image: "/images/home/profservice.jpg" },
+  { num: "03", label: "Design & Décor", href: "/contact", image: "/images/home/designanddecor.jpg" },
+  { num: "04", label: "Catering & Bar", href: "/contact", image: "/images/home/servcatering.jpg" },
+  { num: "05", label: "Corporate / Nonprofit Events", href: "/contact", image: "/images/home/corporte.jpg" },
+  { num: "06", label: "Luxury Wedding, Corporate, Birthdays Event", href: "/contact", image: "/images/home/weddingservice.jpg" },
 ];
 
 export default function ServicesPage() {
@@ -29,7 +22,13 @@ export default function ServicesPage() {
       {/* ══ HERO ════════════════════════════════════════════════ */}
       <section className="relative bg-[#0D0D0C] flex items-center justify-center text-center"
         style={{ minHeight: "60vh", paddingTop: "64px" }}>
-        <PlaceholderImg className="absolute inset-0 opacity-50" label="Services hero photo" />
+        <Image
+          src="/images/home/event.png"
+          alt="1311 Events services"
+          fill
+          className="object-cover"
+          priority
+        />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0D0D0C]/50 via-transparent to-[#0D0D0C]/70" />
         <div className="relative z-10 max-w-3xl px-6 py-20">
           <p className="text-[10px] uppercase tracking-[0.35em] text-[#AF8858] mb-4"
@@ -53,7 +52,7 @@ export default function ServicesPage() {
           {tiles.map((tile) => (
             <Link key={tile.num} href={tile.href}
               className="group relative aspect-[4/3] overflow-hidden block">
-              <PlaceholderImg className="absolute inset-0" label={`${tile.label} photo`} />
+              <Image src={tile.image} alt={tile.label} fill className="object-cover brightness-[0.65]" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0C]/85 via-transparent to-transparent group-hover:from-[#0D0D0C]/70 transition-all" />
               <div className="absolute bottom-0 left-0 right-0 p-5 flex items-end justify-between">
                 <div>
@@ -87,103 +86,14 @@ export default function ServicesPage() {
               Premium event rentals curated to elevate every detail. From furniture to essentials, we have everything you need to bring your vision to life.
             </p>
             <Link href="/contact"
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] px-6 py-3 border border-white/30 text-white hover:border-[#AF8858] hover:text-[#AF8858] transition-colors self-start"
+              className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] px-6 py-3 rounded-full border border-white/30 text-white hover:border-[#AF8858] hover:text-[#AF8858] transition-colors self-start"
               style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}>
               View Catalog <ArrowRight size={13} />
             </Link>
           </div>
-          <PlaceholderImg className="aspect-[4/3]" label="Equipment rentals photo" />
-        </div>
-      </section>
-
-      {/* ══ 02 PROFESSIONALS ════════════════════════════════════ */}
-      <section id="coordination" className="bg-[#0D0D0C] py-20 scroll-mt-16 border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-0">
-          <PlaceholderImg className="aspect-[4/3] order-2 lg:order-1" label="Event professionals photo" />
-          <div className="flex flex-col justify-center py-10 lg:py-0 lg:pl-16 order-1 lg:order-2">
-            <p className="text-[10px] text-white/40 mb-3" style={{ fontFamily: "var(--font-body)" }}>02</p>
-            <h2 className="text-5xl sm:text-6xl text-white mb-4 leading-tight"
-              style={{ fontFamily: "var(--font-display)", fontWeight: 300 }}>
-              Event<br />Professionals
-            </h2>
-            <div className="w-10 h-px bg-[#AF8858] mb-5" />
-            <p className="text-sm text-white/55 leading-relaxed mb-8 max-w-sm"
-              style={{ fontFamily: "var(--font-body)" }}>
-              Our team of experienced coordinators and event managers ensures every detail is handled with precision, professionalism, and aloha from start to finish.
-            </p>
-            <Link href="/contact"
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] px-6 py-3 border border-white/30 text-white hover:border-[#AF8858] hover:text-[#AF8858] transition-colors self-start"
-              style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}>
-              Book a Call <ArrowRight size={13} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ══ 03 DESIGN & DÉCOR ═══════════════════════════════════ */}
-      <section id="decor" className="bg-[#0D0D0C] py-20 scroll-mt-16 border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-0">
-          <div className="flex flex-col justify-center py-10 lg:py-0 lg:pr-16">
-            <p className="text-[10px] text-white/40 mb-3" style={{ fontFamily: "var(--font-body)" }}>03</p>
-            <h2 className="text-5xl sm:text-6xl text-white mb-4 leading-tight"
-              style={{ fontFamily: "var(--font-display)", fontWeight: 300 }}>
-              Design &<br />Décor
-            </h2>
-            <div className="w-10 h-px bg-[#AF8858] mb-5" />
-            <p className="text-sm text-white/55 leading-relaxed mb-6 max-w-sm"
-              style={{ fontFamily: "var(--font-body)" }}>
-              Intentional styling, curated aesthetics, and sophisticated details that transform spaces into unforgettable environments. From concept to full installation.
-            </p>
-            <div className="flex gap-3 flex-wrap">
-              <Link href="/contact"
-                className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] px-6 py-3 border border-white/30 text-white hover:border-[#AF8858] hover:text-[#AF8858] transition-colors"
-                style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}>
-                View Lookbook <ArrowRight size={13} />
-              </Link>
-              <Link href="/contact"
-                className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] px-6 py-3 bg-[#AF8858] hover:bg-[#C5A070] text-white transition-colors"
-                style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}>
-                Book a Call
-              </Link>
-            </div>
-          </div>
-          <PlaceholderImg className="aspect-[4/3]" label="Design & Décor photo" />
-        </div>
-        {/* Inline inquiry */}
-        <div className="max-w-2xl mx-auto px-6 lg:px-10 mt-14">
-          <div className="border border-white/10 p-8">
-            <h3 className="text-2xl text-white mb-1"
-              style={{ fontFamily: "var(--font-display)", fontWeight: 300 }}>
-              Inquire About Design & Décor
-            </h3>
-            <p className="text-xs text-white/40 mb-6" style={{ fontFamily: "var(--font-body)" }}>
-              Tell us about your event and we&rsquo;ll schedule a design consultation.
-            </p>
-            <ContactForm compact />
-          </div>
-        </div>
-      </section>
-
-      {/* ══ 04 CATERING & BAR ═══════════════════════════════════ */}
-      <section id="catering" className="bg-[#0D0D0C] py-20 scroll-mt-16 border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-0">
-          <PlaceholderImg className="aspect-[4/3] order-2 lg:order-1" label="Catering photo" />
-          <div className="flex flex-col justify-center py-10 lg:py-0 lg:pl-16 order-1 lg:order-2">
-            <p className="text-[10px] text-white/40 mb-3" style={{ fontFamily: "var(--font-body)" }}>04</p>
-            <h2 className="text-5xl sm:text-6xl text-white mb-4 leading-tight"
-              style={{ fontFamily: "var(--font-display)", fontWeight: 300 }}>
-              Catering<br />& Bar
-            </h2>
-            <div className="w-10 h-px bg-[#AF8858] mb-5" />
-            <p className="text-sm text-white/55 leading-relaxed mb-4 max-w-sm"
-              style={{ fontFamily: "var(--font-body)" }}>
-              Premium full-service catering, bar, and event staffing from our sister company Memoirs Hawaii—17+ years of culinary excellence across Oʻahu.
-            </p>
-            <a href="https://memoirshawaii.com" target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] px-6 py-3 bg-[#AF8858] hover:bg-[#C5A070] text-white transition-colors self-start mt-4"
-              style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}>
-              Visit Memoirs Hawaii <ExternalLink size={13} />
-            </a>
+          <div className="aspect-[4/3] relative overflow-hidden">
+            <Image src="/images/home/rentals.jpg" alt="Equipment rentals" fill className="object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0D0D0C] via-[#0D0D0C]/25 to-transparent" />
           </div>
         </div>
       </section>
