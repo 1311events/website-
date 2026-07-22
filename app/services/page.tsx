@@ -8,9 +8,9 @@ export const metadata = {
 };
 
 const tiles = [
-  { num: "01", label: "Equipments", href: "#rentals", image: "/images/home/equipments.jpg" },
-  { num: "02", label: "Professionals", href: "/contact", image: "/images/home/profservice.jpg" },
-  { num: "03", label: "Design & Décor", href: "/contact", image: "/images/home/designanddecor.jpg" },
+  { num: "01", label: "Equipment Rentals", href: "#rentals", image: "/images/home/equipments.jpg" },
+  { num: "02", label: "Event Production", href: "/contact", image: "/images/home/profservice.jpg" },
+  { num: "03", label: "Design & Decor", href: "/contact", image: "/images/home/designanddecor.jpg" },
   { num: "04", label: "Catering & Bar", href: "/contact", image: "/images/home/servcatering.jpg" },
   { num: "05", label: "Corporate / Nonprofit Events", href: "/contact", image: "/images/home/corporte.jpg" },
   { num: "06", label: "Luxury Wedding, Corporate, Birthdays Event", href: "/contact", image: "/images/home/weddingservice.jpg" },

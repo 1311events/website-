@@ -23,19 +23,19 @@ const PlaceholderImg = ({ className = "", label = "Team to provide" }: { classNa
 /* ── Services data ───────────────────────────────────────── */
 const homeServices = [
   {
-    label: "Equipments",
-    description: "Curated event furnishings, décor, and essentials designed to elevate every celebration with style and sophistication.",
-    href: "/services#rentals",
-    image: "/images/home/equipments.png",
-  },
-  {
-    label: "Professionals",
+    label: "Event Production",
     description: "Experienced event professionals dedicated to providing polished service and seamless guest experiences.",
     href: "/services#coordination",
     image: "/images/home/professionals.png",
   },
   {
-    label: "Design & Décor",
+    label: "Equipment Rentals",
+    description: "Curated event furnishings, décor, and essentials designed to elevate every celebration with style and sophistication.",
+    href: "/services#rentals",
+    image: "/images/home/equipments.png",
+  },
+  {
+    label: "Design & Decor",
     description: "Intentional styling, curated aesthetics, and sophisticated details that transform spaces into unforgettable environments.",
     href: "/services#decor",
     image: "/images/home/designanddecor.jpg",

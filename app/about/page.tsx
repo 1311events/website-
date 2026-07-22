@@ -4,44 +4,8 @@ import { ArrowRight } from "lucide-react";
 
 export const metadata = {
   title: "About Us — 1311 Events",
-  description: "Hawaii Based. Mission-Driven. Passionate about Excellence.",
+  description: "Hawaii-Based. Full-Service Event & Hospitality Company.",
 };
-
-const recognizedBy = [
-  {
-    name: "GoHawaii.com",
-    blurb: "1311 Events is an event production company specializing in corporate events and weddings. We have a wide array of rental products from tents, tables and chairs...",
-    dark: true,
-    logo: <span className="text-2xl font-bold tracking-tight text-[#1C1C24]" style={{ fontFamily: "Georgia, serif" }}>HI</span>,
-  },
-  {
-    name: "WeddingWire",
-    blurb: "Based in Kapolei, Hawaii, 1311 Events provides premium wedding catering services and rental needs. This business specializes in creating tailored dining ...",
-    dark: false,
-    logo: (
-      <span className="w-14 h-14 rounded-full bg-[#3AAFA9] flex items-center justify-center text-white text-[8px] font-bold text-center leading-tight uppercase">
-        Wedding<br />Wire
-      </span>
-    ),
-  },
-  {
-    name: "The Knot",
-    blurb: "Based in Kapolei, HI, 1311 Events offers catering services for weddings and other special occasions. With their professionalism and high-quality service...",
-    dark: false,
-    logo: (
-      <span className="text-center leading-tight">
-        <span className="block text-lg font-bold text-[#1C1C1C] lowercase" style={{ fontFamily: "Georgia, serif" }}>the knot</span>
-        <span className="block text-[8px] text-[#1C1C1C]/60">made with <span className="text-pink-500">♥</span></span>
-      </span>
-    ),
-  },
-  {
-    name: "Hawaii Business Magazine",
-    blurb: "1311 Events was founded by Jordan Rabe, whose family built the largest event rental company in Hawaii. Jordan spent his childhood learning ...",
-    dark: true,
-    logo: <span className="text-2xl font-black text-[#8A9A3B]" style={{ fontFamily: "Georgia, serif" }}>HB</span>,
-  },
-];
 
 const journalPosts = [
   {
@@ -92,14 +56,22 @@ export default function AboutPage() {
       {/* ══ MISSION INTRO ═══════════════════════════════════════ */}
       <section className="bg-[#F7F7F4] py-20">
         <div className="max-w-3xl mx-auto px-6 lg:px-10 text-center">
-          <h2 className="text-4xl sm:text-5xl text-[#0D0D0C] mb-6 leading-tight"
+          <h2 className="text-4xl sm:text-5xl text-[#0D0D0C] mb-8 leading-tight"
             style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}>
-            Hawaii-Based.<br />Mission-Driven.<br />Passionate About Excellence.
+            Hawaii-Based. Full-Service Event &amp; Hospitality Company.
           </h2>
-          <p className="text-sm leading-relaxed text-[#0D0D0C]/65 max-w-xl mx-auto"
+          <div className="space-y-5 text-sm leading-relaxed text-[#0D0D0C]/65 max-w-2xl mx-auto"
             style={{ fontFamily: "var(--font-body)" }}>
-            We are a full-service event planning and hospitality company rooted in Hawaii&rsquo;s beauty and culture. Our mission is to deliver exceptional experiences with integrity, creativity, and aloha.
-          </p>
+            <p>
+              At 1311 Events, we create exceptional event experiences through expert planning, premium rentals, hospitality, and seamless execution. Based in Hawaii, we partner with corporations, venues, private clients, and event professionals to bring every vision to life with creativity, precision, and aloha.
+            </p>
+            <p>
+              Our services extend beyond traditional event planning. From luxury rentals and event design to staffing, logistics, catering, and on-site coordination, we provide comprehensive solutions that simplify the planning process while delivering unforgettable experiences.
+            </p>
+            <p>
+              Whether we&rsquo;re supporting a corporate conference, luxury wedding, private celebration, nonprofit gala, or large-scale production, our commitment remains the same: exceptional service, thoughtful collaboration, and flawless execution from beginning to end.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -131,11 +103,6 @@ export default function AboutPage() {
                 style={{ fontFamily: "var(--font-body)" }}>
                 Every detail matters. Every experience is intentional. We partner with you to design and execute events that leave a lasting impression—beautifully, seamlessly, and meaningfully.
               </p>
-              <Link href="/services"
-                className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[#AF8858] hover:text-[#C5A070] transition-colors mt-4"
-                style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}>
-                Our Approach <ArrowRight size={13} />
-              </Link>
             </div>
           </div>
           {/* Right – single image */}
@@ -146,39 +113,6 @@ export default function AboutPage() {
               fill
               className="object-cover"
             />
-          </div>
-        </div>
-      </section>
-
-      {/* ══ FEATURED & RECOGNIZED BY ════════════════════════════ */}
-      <section className="bg-[#F7F7F4] py-16">
-        <div className="max-w-6xl mx-auto px-6 lg:px-10">
-          <h2 className="text-3xl sm:text-4xl text-[#0D0D0C] text-center mb-10"
-            style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}>
-            Featured & Recognized by:
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {recognizedBy.map((item) => (
-              <div key={item.name}
-                className={`rounded-2xl p-7 flex gap-5 items-start shadow-lg ${item.dark ? "bg-[#1C1C24]" : "bg-[#C09B6E]"}`}>
-                <div className="w-20 h-20 rounded-xl shrink-0 flex items-center justify-center bg-white shadow-md overflow-hidden">
-                  {item.logo}
-                </div>
-                <div>
-                  <p className={`text-base font-bold mb-1.5 ${item.dark ? "text-white" : "text-[#1C1C1C]"}`}
-                    style={{ fontFamily: "var(--font-body)" }}>
-                    {item.name}
-                  </p>
-                  <p className={`text-xs leading-relaxed ${item.dark ? "text-white/70" : "text-[#1C1C1C]/75"}`}
-                    style={{ fontFamily: "var(--font-body)" }}>
-                    {item.blurb}{" "}
-                    <span className={`cursor-pointer underline underline-offset-2 ${item.dark ? "text-white" : "text-[#1C1C1C]"}`}>
-                      Read more
-                    </span>
-                  </p>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
