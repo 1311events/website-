@@ -3,6 +3,8 @@ import { Cormorant_Garamond, Montserrat, EB_Garamond } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { CartProvider } from "@/components/CartProvider";
+import CartDrawer from "@/components/CartDrawer";
 
 const cormorant = Cormorant_Garamond({
   weight: ["300", "400", "500", "600"],
@@ -39,9 +41,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${cormorant.variable} ${montserrat.variable} ${ebGaramond.variable}`}>
-        <Navbar />
-        <main className="pt-16">{children}</main>
-        <Footer />
+        <CartProvider>
+          <Navbar />
+          <main className="pt-16">{children}</main>
+          <Footer />
+          <CartDrawer />
+        </CartProvider>
       </body>
     </html>
   );

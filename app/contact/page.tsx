@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import ContactForm from "@/components/ContactForm";
 import { MapPin, Phone, Mail } from "lucide-react";
 
@@ -126,7 +127,9 @@ export default function ContactPage() {
               <p className="text-xs text-white/40 mb-7" style={{ fontFamily: "var(--font-body)" }}>
                 We typically respond within one business day.
               </p>
-              <ContactForm />
+              <Suspense fallback={<div className="h-64 animate-pulse bg-white/5" />}>
+                <ContactForm />
+              </Suspense>
             </div>
           </div>
         </div>

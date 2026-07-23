@@ -1,7 +1,9 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { formatMoney, lineTotal, useCart } from "@/components/CartProvider";
 
 type FormValues = {
   firstName: string;
@@ -34,10 +36,43 @@ interface ContactFormProps {
 
 export default function ContactForm({ compact = false }: ContactFormProps) {
   const [submitted, setSubmitted] = useState(false);
-  const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
+  const searchParams = useSearchParams();
+  const { items, estimatedTotal, clearCart } = useCart();
+
+  const cartDetails = useMemo(() => {
+    if (!items.length) return "";
+    const lines = items.map((line) => {
+      const total = lineTotal(line);
+      const totalLabel = total !== null ? ` = ${formatMoney(total)}` : "";
+      return `• ${line.name} (${line.category}) — Qty: ${line.quantity} × ${line.price}${totalLabel}`;
+    });
+    const totalLine =
+      estimatedTotal !== null
+        ? `\nEstimated total: ${formatMoney(estimatedTotal)}`
+        : "\nEstimated total: On request (includes TBD items)";
+    return ["Inventory cart selection:", ...lines, totalLine].join("\n");
+  }, [items, estimatedTotal]);
+
+  const fromCart = searchParams.get("from") === "cart";
+  const hasCartItems = items.length > 0;
+
+  const { register, handleSubmit, formState: { errors }, setValue } = useForm<FormValues>({
+    defaultValues: {
+      services: hasCartItems ? ["rentals"] : [],
+      orderDetails: "",
+    },
+  });
+
+  useEffect(() => {
+    if (cartDetails) {
+      setValue("orderDetails", cartDetails);
+      setValue("services", ["rentals"]);
+    }
+  }, [cartDetails, setValue]);
 
   const onSubmit = (data: FormValues) => {
     console.log(data);
+    if (items.length) clearCart();
     setSubmitted(true);
   };
 
@@ -187,10 +222,44 @@ export default function ContactForm({ compact = false }: ContactFormProps) {
         {errors.serviceType && <p style={errStyle}>{errors.serviceType.message}</p>}
       </div>
 
+      {/* Cart summary */}
+      {hasCartItems && (
+        <div className="border border-[#AF8858]/30 p-4 space-y-2">
+          <p style={{ ...labelStyle, marginBottom: 0, color: "#AF8858" }}>
+            {fromCart ? "From your cart" : "Inventory in cart"}
+          </p>
+          <ul className="space-y-1">
+            {items.map((line) => (
+              <li
+                key={line.id}
+                className="text-xs text-white/60 flex justify-between gap-3"
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                <span>
+                  {line.name} × {line.quantity}
+                </span>
+                <span className="text-[#AF8858] shrink-0">
+                  {lineTotal(line) !== null ? formatMoney(lineTotal(line)!) : "Quote"}
+                </span>
+              </li>
+            ))}
+          </ul>
+          {estimatedTotal !== null && (
+            <p
+              className="text-xs text-white pt-2 border-t border-white/10 flex justify-between"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              <span>Estimated total</span>
+              <span className="text-[#AF8858]">{formatMoney(estimatedTotal)}</span>
+            </p>
+          )}
+        </div>
+      )}
+
       {/* Order details */}
       <div>
         <label style={labelStyle}>Order Details</label>
-        <textarea {...register("orderDetails")} rows={4}
+        <textarea {...register("orderDetails")} rows={hasCartItems ? 8 : 4}
           placeholder="Please provide details for your event (equipment types, counts, set up and breakdown time, etc.)"
           style={{ ...inputStyle, resize: "none" }}
           onFocus={(e) => (e.currentTarget.style.borderColor = "#AF8858")}

@@ -7,9 +7,11 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
   { label: "Services", href: "/services" },
+  { label: "Inventory", href: "/inventory" },
   { label: "Gallery", href: "/gallery" },
   { label: "Venues", href: "/venues" },
   { label: "Seafood & Caviar", href: "/seafood" },
+  { label: "Cart", href: "/cart" },
   { label: "Contact", href: "/contact" },
 ];
 
