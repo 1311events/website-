@@ -114,7 +114,7 @@ export async function POST(request: Request) {
   }
 
   const from =
-    process.env.RESEND_FROM_EMAIL ?? "1311 Events <onboarding@resend.dev>";
+    process.env.RESEND_FROM_EMAIL ?? "1311 Events <info@1311events.com>";
 
   const resend = new Resend(apiKey);
 
