@@ -36,6 +36,8 @@ interface ContactFormProps {
 
 export default function ContactForm({ compact = false }: ContactFormProps) {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const { items, estimatedTotal, clearCart } = useCart();
 
@@ -70,10 +72,32 @@ export default function ContactForm({ compact = false }: ContactFormProps) {
     }
   }, [cartDetails, setValue]);
 
-  const onSubmit = (data: FormValues) => {
-    console.log(data);
-    if (items.length) clearCart();
-    setSubmitted(true);
+  const onSubmit = async (data: FormValues) => {
+    setSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = (await response.json()) as { error?: string };
+
+      if (!response.ok) {
+        throw new Error(result.error ?? "Unable to send your message.");
+      }
+
+      if (items.length) clearCart();
+      setSubmitted(true);
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error ? error.message : "Unable to send your message. Please try again."
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -277,11 +301,19 @@ export default function ContactForm({ compact = false }: ContactFormProps) {
         </div>
       )}
 
-      <button type="submit"
-        className="w-full text-white text-xs uppercase tracking-[0.3em] py-4 bg-[#AF8858] hover:bg-[#C5A070] transition-colors"
-        style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}>
-        Get Started
+      <button
+        type="submit"
+        disabled={submitting}
+        className="w-full text-white text-xs uppercase tracking-[0.3em] py-4 bg-[#AF8858] hover:bg-[#C5A070] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+        style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}
+      >
+        {submitting ? "Sending…" : "Get Started"}
       </button>
+      {submitError && (
+        <p style={errStyle} className="text-center">
+          {submitError}
+        </p>
+      )}
     </form>
   );
 }
