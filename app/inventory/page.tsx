@@ -1,11 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
+import { IMAGE_QUALITY, SIZES } from "@/lib/image";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Inventory — 1311 Events",
-  description: "Our curated rental inventory catalog is coming soon.",
-};
+export const metadata = pageMetadata(
+  "/inventory",
+  "Equipment Rentals",
+  "Browse luxury event rentals from 1311 Events — furnishings, décor, and essentials for weddings, corporate events, and celebrations in Hawaii."
+);
 
 export default function InventoryPage() {
   return (
@@ -17,6 +20,8 @@ export default function InventoryPage() {
           alt=""
           fill
           className="object-cover scale-105 blur-2xl brightness-[0.28] saturate-[0.85]"
+          sizes={SIZES.hero}
+          quality={60}
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0D0D0C]/85 via-[#0D0D0C]/55 to-[#0D0D0C]/90" />

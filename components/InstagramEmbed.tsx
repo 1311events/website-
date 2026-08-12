@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { IMAGE_QUALITY, SIZES } from "@/lib/image";
 
 export default function InstagramEmbed() {
   const [showTooltip, setShowTooltip] = useState(false);
@@ -30,9 +31,8 @@ export default function InstagramEmbed() {
           alt="1311 Events Instagram Feed"
           fill
           className="object-cover"
-          quality={100}
-          sizes="100vw"
-          unoptimized
+          quality={IMAGE_QUALITY}
+          sizes={SIZES.hero}
         />
       </div>
 

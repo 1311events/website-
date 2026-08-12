@@ -1,9 +1,28 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import ClientLogoCarousel from "@/components/ClientLogoCarousel";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
 import InstagramEmbed from "@/components/InstagramEmbed";
+import FeaturedExperiencesCarousel from "@/components/FeaturedExperiencesCarousel";
+import { IMAGE_QUALITY, SIZES } from "@/lib/image";
+import { SITE_URL } from "@/lib/site";
 import { ArrowRight } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "1311 Events — Thirteen Eleven Events | Hawaii's #1 Event Company",
+  description:
+    "1311 Events (Thirteen Eleven Events) — Hawaii's largest event rental & production company. Full-service coordination, luxury rentals, catering, bar services, and staffing. Based in Honolulu, HI. Call 808-225-9413.",
+  alternates: { canonical: SITE_URL },
+  openGraph: {
+    type: "website",
+    url: SITE_URL,
+    title: "1311 Events — Thirteen Eleven Events | Hawaii's #1 Event Company",
+    description:
+      "Hawaii's largest full-service event rental & production company. Luxury rentals, catering, bar services, staffing, and coordination.",
+    images: [{ url: `${SITE_URL}/images/home/hero.jpg`, width: 1200, height: 630, alt: "1311 Events — Thirteen Eleven Events" }],
+  },
+};
 
 /* ── shared helpers ──────────────────────────────────────── */
 const Eyebrow = ({ label, light = true }: { label: string; light?: boolean }) => (
@@ -25,13 +44,13 @@ const homeServices = [
   {
     label: "Event Production",
     description: "Experienced event professionals dedicated to providing polished service and seamless guest experiences.",
-    href: "/services#coordination",
+    href: "/services#production",
     image: "/images/home/professionals.png",
   },
   {
     label: "Equipment Rentals",
     description: "Curated event furnishings, décor, and essentials designed to elevate every celebration with style and sophistication.",
-    href: "/services#rentals",
+    href: "/inventory",
     image: "/images/home/equipments.png",
   },
   {
@@ -42,12 +61,52 @@ const homeServices = [
   },
 ];
 
-/* ── Featured experience tags ───────────────────────────── */
-const festaTags = ["Event Production", "Catering", "Bar Services", "Staffing", "Culinary Experience", "Rentals"];
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": ["LocalBusiness", "EventVenue"],
+  name: "1311 Events",
+  alternateName: "13 Eleven Events",
+  url: SITE_URL,
+  logo: `${SITE_URL}/images/home/hero.jpg`,
+  image: `${SITE_URL}/images/home/hero.jpg`,
+  description:
+    "1311 Events (13 Eleven Events) is Hawaiʻi's largest full-service event rental and production company, offering coordination, luxury rentals, catering, bar services, and staffing.",
+  email: "info@1311events.com",
+  telephone: "+1-808-225-9413",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Honolulu",
+    addressRegion: "HI",
+    addressCountry: "US",
+  },
+  areaServed: { "@type": "State", name: "Hawaii" },
+  sameAs: [
+    "https://www.instagram.com/1311events/",
+    "https://www.1311events.com",
+  ],
+  priceRange: "$$",
+  openingHours: "Mo-Fr 09:00-17:00",
+};
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "1311 Events",
+  alternateName: "13 Eleven Events",
+  url: SITE_URL,
+};
 
 export default function HomePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
       {/* ══ 1. HERO ══════════════════════════════════════════════ */}
       <section className="relative flex flex-col items-center justify-center text-center min-h-screen bg-[#0D0D0C] px-6"
         style={{ paddingTop: "80px" }}>
@@ -56,18 +115,24 @@ export default function HomePage() {
           alt="1311 Events hero"
           fill
           className="object-cover"
+          sizes={SIZES.hero}
+          quality={IMAGE_QUALITY}
           priority
         />
         <div className="absolute inset-0 bg-[#0D0D0C]/45" />
 
         <div className="relative z-10 max-w-4xl">
-          <h1 className="text-6xl sm:text-8xl lg:text-9xl text-white mb-5 leading-tight italic"
+          <h1 className="text-6xl sm:text-8xl lg:text-9xl text-white mb-3 leading-tight italic"
             style={{ fontFamily: "var(--font-display)", fontWeight: 300 }}>
             13 Eleven Events
           </h1>
+          <p className="text-sm sm:text-base uppercase tracking-[0.35em] text-[#AF8858] mb-4"
+            style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}>
+            1311 Events
+          </p>
           <p className="text-base sm:text-lg text-white/70 mb-12 italic"
             style={{ fontFamily: "var(--font-script)" }}>
-            your one-stop shop for event services in Hawaii.
+            Your one-stop shop for event services in Hawaiʻi.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link href="/contact"
@@ -90,13 +155,13 @@ export default function HomePage() {
           {/* 4-photo collage */}
           <div className="grid grid-cols-2 gap-2 h-[480px]">
             <div className="row-span-2 rounded-sm relative overflow-hidden">
-              <Image src="/images/home/table.PNG" alt="Table setup" fill className="object-cover" />
+              <Image src="/images/home/table.PNG" alt="Table setup" fill sizes={SIZES.quarter} quality={IMAGE_QUALITY} className="object-cover" />
             </div>
             <div className="rounded-sm relative overflow-hidden">
-              <Image src="/images/home/floral.PNG" alt="Floral arrangement" fill className="object-cover" />
+              <Image src="/images/home/floral.PNG" alt="Floral arrangement" fill sizes={SIZES.quarter} quality={IMAGE_QUALITY} className="object-cover" />
             </div>
             <div className="rounded-sm relative overflow-hidden">
-              <Image src="/images/home/lady.png" alt="Event professional" fill className="object-cover" />
+              <Image src="/images/home/lady.png" alt="Event professional" fill sizes={SIZES.quarter} quality={IMAGE_QUALITY} className="object-cover" />
             </div>
           </div>
           {/* Text */}
@@ -108,7 +173,7 @@ export default function HomePage() {
             </h2>
             <p className="text-sm leading-relaxed text-[#0D0D0C]/65 mb-8 max-w-md"
               style={{ fontFamily: "var(--font-body)" }}>
-              At 1311 Events, we are a full-service event planning partner by integrating event production, luxury rentals, catering, bar services, staffing, and coordination under one trusted team.
+              At 13 Eleven Events, we are a full-service event planning partner by integrating event production, luxury rentals, catering, bar services, staffing, and coordination under one trusted team.
             </p>
             <Link href="/about"
               className="inline-block text-xs uppercase tracking-[0.25em] px-7 py-3 border border-[#0D0D0C] text-[#0D0D0C] hover:bg-[#0D0D0C] hover:text-white transition-colors"
@@ -122,58 +187,7 @@ export default function HomePage() {
       {/* ══ 3. CLIENTS WE'VE SERVED ══════════════════════════════ */}
       <ClientLogoCarousel />
 
-      {/* ══ 4. FEATURED EXPERIENCES ══════════════════════════════ */}
-      <section className="bg-[#0D0D0C] py-20">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <div className="text-center mb-10">
-            <h2 className="text-4xl sm:text-5xl text-white mb-3"
-              style={{ fontFamily: "var(--font-display)", fontWeight: 300 }}>
-              Featured Experiences
-            </h2>
-            <p className="text-sm text-white/45 max-w-lg mx-auto"
-              style={{ fontFamily: "var(--font-script)", fontStyle: "italic" }}>
-              a collection of events designed with intention, elevated through hospitality, production, and execution.
-            </p>
-          </div>
-
-          {/* Featured event card */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 border border-white/10">
-            <div className="aspect-[4/3] lg:aspect-auto relative overflow-hidden">
-              <Image src="/images/home/festa.png" alt="Festa Italiana event" fill className="object-cover" />
-            </div>
-            <div className="p-8 sm:p-10 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-white/10">
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-[#AF8858] mb-3"
-                  style={{ fontFamily: "var(--font-body)" }}>
-                  Honolulu, Hawaii
-                </p>
-                <h3 className="text-4xl sm:text-5xl text-white mb-4 leading-tight"
-                  style={{ fontFamily: "var(--font-display)", fontWeight: 300 }}>
-                  Festa<br />Italiana
-                </h3>
-                <p className="text-sm text-white/55 leading-relaxed mb-7"
-                  style={{ fontFamily: "var(--font-body)" }}>
-                  A two-day culinary celebration bringing together iconic flavors, world-class talent, and the spirit of Italian hospitality.
-                </p>
-                <div className="flex flex-wrap gap-2 mb-8">
-                  {festaTags.map((tag) => (
-                    <span key={tag}
-                      className="text-[10px] uppercase tracking-[0.2em] px-3 py-1 border border-white/20 text-white/50"
-                      style={{ fontFamily: "var(--font-body)" }}>
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <Link href="/gallery"
-                className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[#AF8858] hover:text-[#C5A070] transition-colors"
-                style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}>
-                More Projects <ArrowRight size={14} />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      <FeaturedExperiencesCarousel />
 
       {/* ══ 5. OUR SERVICES (image tile cards) ══════════════════ */}
       <section className="bg-[#0D0D0C] pb-20">
@@ -187,7 +201,7 @@ export default function HomePage() {
               <Link key={svc.label} href={svc.href}
                 className="group relative aspect-[3/4] overflow-hidden block">
                 {svc.image ? (
-                  <Image src={svc.image} alt={svc.label} fill className="object-cover brightness-[0.65]" />
+                  <Image src={svc.image} alt={svc.label} fill sizes={SIZES.third} quality={IMAGE_QUALITY} className="object-cover brightness-[0.65]" />
                 ) : (
                   <PlaceholderImg className="absolute inset-0" label={`${svc.label} photo`} />
                 )}

@@ -1,10 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ExternalLink } from "lucide-react";
+import { IMAGE_QUALITY, SIZES } from "@/lib/image";
+import { pageMetadata } from "@/lib/seo";
 
 export const metadata = {
-  title: "Venues — 1311 Events",
-  description: "Curated Spaces. Elevated Experiences. Premier event venues in Hawaii and beyond.",
+  ...pageMetadata(
+    "/venues",
+    "Venues",
+    "Premier event venues in Hawaiʻi, curated by 13 Eleven Events."
+  ),
+  robots: { index: false, follow: false },
 };
 
 const venues = [
@@ -22,15 +28,15 @@ const venues = [
   },
   {
     num: "02",
-    name: "Indoor Event at Kapolei",
-    location: "Kapolei, Hawai\u02BBi",
+    name: "Hana Kitchens Hawaiʻi",
+    location: "Honolulu, Oʻahu",
     description:
-      "An elegant indoor event space designed for upscale corporate functions, private receptions, galas, and exclusive experiences.",
-    cta: "View Space",
+      "A versatile Honolulu venue featuring modern event spaces and a professional show kitchen, ideal for intimate celebrations, corporate gatherings, private dining, and culinary experiences.",
+    cta: "Explore the Venue",
     href: "/contact",
     external: false,
     image: null,
-    imageAlt: "Indoor Event at Kapolei",
+    imageAlt: "Hana Kitchens Hawaiʻi",
   },
 ];
 
@@ -55,6 +61,8 @@ function VenueCard({ venue }: { venue: (typeof venues)[number] }) {
           alt={venue.imageAlt}
           fill
           className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
+          sizes={SIZES.half}
+          quality={IMAGE_QUALITY}
         />
       ) : (
         <PlaceholderImg className="absolute inset-0" label={`${venue.name} photo`} />
@@ -111,7 +119,7 @@ function VenueCard({ venue }: { venue: (typeof venues)[number] }) {
   return (
     <div className="relative group overflow-hidden" style={{ minHeight: "520px" }}>
       {venue.image ? (
-        <Image src={venue.image} alt={venue.imageAlt} fill className="object-cover" />
+        <Image src={venue.image} alt={venue.imageAlt} fill sizes={SIZES.half} quality={IMAGE_QUALITY} className="object-cover" />
       ) : (
         <PlaceholderImg className="absolute inset-0" label={`${venue.name} photo`} />
       )}

@@ -1,12 +1,15 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
+import { IMAGE_QUALITY, SIZES } from "@/lib/image";
+import { pageMetadata } from "@/lib/seo";
+import { MEMOIRS_URL } from "@/lib/site";
 
-export const metadata = {
-  title: "Seafood & Caviar — 1311 Events",
-  description:
-    "Premium caviar and specialty seafood by Browne Trading Company, exclusively available in Hawaii through 1311 Events.",
-};
+export const metadata = pageMetadata(
+  "/seafood",
+  "Food & Beverage",
+  "Full-service catering and bar by Memoirs Hawaiʻi, plus premium caviar and specialty seafood through 13 Eleven Events."
+);
 
 const whyBrowne = [
   {
@@ -150,29 +153,67 @@ export default function SeafoodPage() {
           alt="Premium caviar collection"
           fill
           className="object-cover brightness-[0.45]"
+          sizes={SIZES.hero}
+          quality={IMAGE_QUALITY}
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0D0D0C]/70 via-[#0D0D0C]/30 to-[#0D0D0C]/90" />
         <div className="relative z-10 max-w-4xl px-6 py-24">
-          <SectionLabel>Seafood &amp; Caviar</SectionLabel>
+          <SectionLabel>Food &amp; Beverage</SectionLabel>
           <h1
             className="text-5xl sm:text-6xl lg:text-7xl text-white mb-6 leading-tight"
             style={{ fontFamily: "var(--font-display)", fontWeight: 300 }}
           >
-            The Caviar Collection
+            Catering, Bar &amp; Culinary
           </h1>
           <p
             className="text-sm sm:text-base text-white/55 max-w-2xl mx-auto leading-relaxed"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            Premium Caviar &amp; Seafood by Browne Trading Company, exclusively available in
-            Hawaii through 1311 Events.
+            Full-service food and beverage through Memoirs Hawaiʻi — plus premium caviar and specialty seafood exclusively available in Hawaiʻi through 13 Eleven Events.
           </p>
         </div>
       </section>
 
-      {/* Partnership Introduction */}
-      <section className="bg-[#0D0D0C] py-20 border-t border-white/5">
+      {/* Memoirs Hawaiʻi — primary catering partner */}
+      <section className="bg-[#F7F7F4] py-16 border-b border-[#D3D3C7]">
+        <div className="max-w-6xl mx-auto px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.35em] text-[#AF8858] mb-4" style={{ fontFamily: "var(--font-body)" }}>
+              Sister Company
+            </p>
+            <h2 className="text-4xl sm:text-5xl text-[#0D0D0C] mb-5 leading-tight" style={{ fontFamily: "var(--font-display)", fontWeight: 300 }}>
+              Memoirs Hawaiʻi Catering &amp; Event Services
+            </h2>
+            <p className="text-sm text-[#0D0D0C]/65 leading-relaxed mb-8" style={{ fontFamily: "var(--font-body)" }}>
+              Memoirs Hawaiʻi is our sister company offering fine-dining catering, premium bar services, and staffing for corporate events, weddings, and private celebrations across Oʻahu. Explore menus, service styles, and request a quote directly through Memoirs.
+            </p>
+            <a
+              href={MEMOIRS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] px-7 py-3 bg-[#0D0D0C] text-white hover:bg-[#AF8858] transition-colors"
+              style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}
+            >
+              Visit Memoirs Hawaiʻi <ArrowRight size={13} />
+            </a>
+          </div>
+          <div className="bg-[#0D0D0C] p-8 text-white">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[#AF8858] mb-4" style={{ fontFamily: "var(--font-body)" }}>
+              Services Include
+            </p>
+            <ul className="space-y-3 text-sm text-white/65" style={{ fontFamily: "var(--font-body)" }}>
+              <li>• Full-service catering &amp; custom menus</li>
+              <li>• Premium bar services &amp; staffing</li>
+              <li>• Corporate events, weddings &amp; private dining</li>
+              <li>• Seamless coordination with 13 Eleven Events rentals &amp; production</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* Caviar collection */}
+      <section id="caviar" className="bg-[#0D0D0C] py-20 border-t border-white/5">
         <div className="max-w-6xl mx-auto px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
             <SectionLabel>Partnership Introduction</SectionLabel>
@@ -200,6 +241,8 @@ export default function SeafoodPage() {
               alt="Caviar service at an event"
               fill
               className="object-cover"
+              sizes={SIZES.half}
+              quality={IMAGE_QUALITY}
             />
           </div>
         </div>
@@ -439,6 +482,8 @@ export default function SeafoodPage() {
               alt="Caviar presentation"
               fill
               className="object-cover"
+              sizes={SIZES.half}
+              quality={IMAGE_QUALITY}
             />
           </div>
         </div>
@@ -476,6 +521,8 @@ export default function SeafoodPage() {
               alt="Premium seafood"
               fill
               className="object-cover"
+              sizes={SIZES.half}
+              quality={IMAGE_QUALITY}
             />
           </div>
           <div className="flex flex-col justify-center px-10 lg:px-16 py-16">

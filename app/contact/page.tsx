@@ -12,10 +12,13 @@ function InstagramIcon() {
   );
 }
 
-export const metadata = {
-  title: "Contact — 1311 Events",
-  description: "Get in touch with the 1311 Events team to start planning your event in Hawaii.",
-};
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata(
+  "/contact",
+  "Contact",
+  "Contact 1311 Events to start planning your next corporate event, wedding, or private celebration in Hawaii."
+);
 
 const PlaceholderImg = ({ className = "" }: { className?: string }) => (
   <div className={`flex items-center justify-center text-xs text-white/15 ${className}`}
@@ -106,13 +109,7 @@ export default function ContactPage() {
                 Business Hours
               </p>
               <p className="text-sm text-white/60" style={{ fontFamily: "var(--font-body)" }}>
-                Monday – Friday: 9 AM – 6 PM HST
-              </p>
-              <p className="text-sm text-white/60" style={{ fontFamily: "var(--font-body)" }}>
-                Saturday: 10 AM – 3 PM HST
-              </p>
-              <p className="text-sm text-white/40" style={{ fontFamily: "var(--font-body)" }}>
-                Sunday: Closed
+                Monday – Friday: 9 AM – 5 PM HST
               </p>
             </div>
           </div>

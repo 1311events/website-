@@ -7,9 +7,10 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
   { label: "Services", href: "/services" },
+  { label: "Equipment Rentals", href: "/inventory" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Venues", href: "/venues" },
-  { label: "Seafood & Caviar", href: "/seafood" },
+  { label: "Food & Beverage", href: "/seafood" },
+  { label: "Journal", href: "/journal" },
   { label: "Cart", href: "/cart" },
   { label: "Contact", href: "/contact" },
 ];
@@ -40,9 +41,9 @@ export default function Footer() {
                 className="object-contain brightness-0 invert"
               />
             </Link>
-            <p className="text-xs text-white/40 leading-relaxed max-w-[200px]"
+            <p className="text-xs text-white/40 leading-relaxed max-w-[220px]"
               style={{ fontFamily: "var(--font-body)" }}>
-              Your one-stop shop for event services in Hawaii.
+              Thirteen Eleven Events — Your one-stop shop for event services in Hawaiʻi.
             </p>
             <div className="flex gap-3 mt-5">
               <a href="https://instagram.com/1311events" target="_blank" rel="noopener noreferrer"

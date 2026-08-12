@@ -1,12 +1,13 @@
 import fs from "fs";
 import path from "path";
 import GalleryGrid, { GalleryPhoto } from "@/components/GalleryGrid";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Gallery — 1311 Events",
-  description:
-    "Thoughtfully Designed. Flawlessly Executed. A curated collection of events by 1311 Events.",
-};
+export const metadata = pageMetadata(
+  "/gallery",
+  "Gallery",
+  "A curated collection of weddings, corporate events, and luxury celebrations produced by 1311 Events in Hawaii."
+);
 
 const CATEGORY_FOLDERS: { folder: string; label: string }[] = [
   { folder: "brand-activities", label: "Brand Activities" },

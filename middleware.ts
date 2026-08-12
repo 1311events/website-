@@ -7,6 +7,14 @@ import type { NextRequest } from "next/server";
  * errors in production logs. Reject those requests before Next.js handles them.
  */
 export function middleware(request: NextRequest) {
+  const host = request.headers.get("host")?.split(":")[0];
+  if (host === "1311events.com") {
+    const url = request.nextUrl.clone();
+    url.hostname = "www.1311events.com";
+    url.protocol = "https:";
+    return NextResponse.redirect(url, 301);
+  }
+
   if (request.method !== "POST") {
     return NextResponse.next();
   }

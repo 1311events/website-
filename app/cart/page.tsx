@@ -1,9 +1,12 @@
 import CartPageContent from "@/components/CartPageContent";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Cart — 1311 Events",
-  description: "Review your selected rental inventory and request a quote.",
-};
+export const metadata = pageMetadata(
+  "/cart",
+  "Cart",
+  "Review your selected rental inventory and request a quote.",
+  { noIndex: true }
+);
 
 export default function CartPage() {
   return (

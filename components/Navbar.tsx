@@ -11,9 +11,9 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
   { label: "Services", href: "/services" },
+  { label: "Equipment Rentals", href: "/inventory" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Venues", href: "/venues" },
-  { label: "Seafood & Caviar", href: "/seafood" },
+  { label: "Food & Beverage", href: "/seafood" },
   { label: "Contact", href: "/contact" },
 ];
 

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import LazyImage from "@/components/LazyImage";
+import { SIZES } from "@/lib/image";
 
 export type GalleryPhoto = {
   src: string;
@@ -28,7 +29,6 @@ export default function GalleryGrid({ photos }: { photos: GalleryPhoto[] }) {
 
   return (
     <>
-      {/* Filter tabs */}
       <section className="bg-[#0D0D0C] sticky top-16 z-30 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="flex gap-1 overflow-x-auto py-2 justify-start lg:justify-center">
@@ -42,9 +42,7 @@ export default function GalleryGrid({ photos }: { photos: GalleryPhoto[] }) {
                   fontWeight: 500,
                   color: active === tab ? "#FFFFFF" : "rgba(255,255,255,0.45)",
                   borderBottom:
-                    active === tab
-                      ? "1px solid #AF8858"
-                      : "1px solid transparent",
+                    active === tab ? "1px solid #AF8858" : "1px solid transparent",
                 }}
               >
                 {tab}
@@ -54,7 +52,6 @@ export default function GalleryGrid({ photos }: { photos: GalleryPhoto[] }) {
         </div>
       </section>
 
-      {/* Photo grid */}
       <section className="bg-[#0D0D0C] py-4 min-h-[40vh]">
         <div className="max-w-7xl mx-auto px-4 lg:px-6">
           {visible.length === 0 ? (
@@ -73,14 +70,15 @@ export default function GalleryGrid({ photos }: { photos: GalleryPhoto[] }) {
                   key={photo.src}
                   className="relative overflow-hidden break-inside-avoid group"
                 >
-                  <Image
+                  <LazyImage
                     src={photo.src}
                     alt={photo.category}
                     width={800}
                     height={600}
+                    sizes={SIZES.gallery}
                     className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-[#0D0D0C]/0 group-hover:bg-[#0D0D0C]/20 transition-colors" />
+                  <div className="absolute inset-0 bg-[#0D0D0C]/0 group-hover:bg-[#0D0D0C]/20 transition-colors pointer-events-none" />
                 </div>
               ))}
             </div>

@@ -30,9 +30,27 @@ const ebGaramond = EB_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "1311 Events — Hawaii's Premier Event Partner",
+  metadataBase: new URL("https://www.1311events.com"),
+  title: {
+    default: "Thirteen Eleven Events | 1311 Events — Hawaii Event Production",
+    template: "%s | 1311 Events",
+  },
   description:
-    "Your one-stop shop for event services in Hawaii. Design, coordination, rentals, décor, catering and bar services—all in one place.",
+    "1311 Events (Thirteen Eleven Events) is Hawaii's premier full-service event partner — production, luxury rentals, catering, bar services, and coordination.",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "1311 Events",
+    title: "Thirteen Eleven Events | 1311 Events — Hawaii Event Production",
+    description:
+      "Hawaii's premier event partner for production, rentals, catering, and coordination.",
+    url: "https://www.1311events.com",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "1311 Events — Thirteen Eleven Events",
+    description: "Hawaii's premier full-service event partner.",
+  },
 };
 
 export default function RootLayout({
