@@ -26,6 +26,8 @@ const nextConfig: NextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [256, 384, 640, 750, 828],
     minimumCacheTTL: 60 * 60 * 24 * 30,
+    // Cap disk cache to avoid unbounded growth on Railway's ephemeral filesystem.
+    maximumDiskCacheSize: 50 * 1024 * 1024,
   },
 };
 
