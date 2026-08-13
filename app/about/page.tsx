@@ -1,9 +1,6 @@
-import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
 import { IMAGE_QUALITY, SIZES } from "@/lib/image";
 import { pageMetadata } from "@/lib/seo";
-import { journalPosts } from "@/lib/journal";
 
 export const metadata = pageMetadata(
   "/about",
@@ -98,53 +95,6 @@ export default function AboutPage() {
               sizes={SIZES.half}
               quality={IMAGE_QUALITY}
             />
-          </div>
-        </div>
-      </section>
-
-      {/* ══ THE 13 ELEVEN EVENT JOURNAL ═════════════════════════ */}
-      <section className="bg-[#F7F7F4] py-16">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <div className="text-center mb-10">
-            <h2 className="text-4xl sm:text-5xl text-[#0D0D0C] mb-2"
-              style={{ fontFamily: "var(--font-display)", fontWeight: 300 }}>
-              The 13 Eleven Event Journal
-            </h2>
-            <p className="text-sm text-[#0D0D0C]/50"
-              style={{ fontFamily: "var(--font-script)", fontStyle: "italic" }}>
-              Insights, inspiration, and stories behind elevated events, hospitality, and celebrations in Hawaiʻi.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            {journalPosts.map((post) => (
-              <Link key={post.slug} href={`/journal/${post.slug}`}
-                className="group bg-white border border-[#D3D3C7] overflow-hidden hover:shadow-md transition-shadow">
-                <div className="aspect-[16/9] relative overflow-hidden">
-                  <Image src={post.image} alt={post.title} fill sizes={SIZES.third} quality={IMAGE_QUALITY} className="object-cover" />
-                </div>
-                <div className="p-5">
-                  <p className="text-[10px] uppercase tracking-[0.25em] text-[#AF8858] mb-2"
-                    style={{ fontFamily: "var(--font-body)" }}>
-                    {post.category}
-                  </p>
-                  <p className="text-base text-[#0D0D0C] leading-snug mb-4 group-hover:text-[#AF8858] transition-colors"
-                    style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}>
-                    {post.title}
-                  </p>
-                  <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.2em] text-[#AF8858]"
-                    style={{ fontFamily: "var(--font-body)" }}>
-                    Read Article <ArrowRight size={11} />
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
-          <div className="text-center mt-8">
-            <Link href="/journal"
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[#AF8858] hover:text-[#C5A070] transition-colors"
-              style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}>
-              View All Articles <ArrowRight size={13} />
-            </Link>
           </div>
         </div>
       </section>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { SITE_LOGO, siteLogoClassName, siteLogoStyle } from "@/lib/clients";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -34,11 +35,12 @@ export default function Footer() {
           <div>
             <Link href="/" className="inline-block mb-4">
               <Image
-                src="/1311-Logo-Black.png"
-                alt="1311 Events"
-                width={110}
-                height={44}
-                className="object-contain brightness-0 invert"
+                src={SITE_LOGO.src}
+                alt={SITE_LOGO.alt}
+                width={SITE_LOGO.width}
+                height={SITE_LOGO.height}
+                className={siteLogoClassName}
+                style={siteLogoStyle}
               />
             </Link>
             <p className="text-xs text-white/40 leading-relaxed max-w-[220px]"
