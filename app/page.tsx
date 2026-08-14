@@ -122,14 +122,10 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[#0D0D0C]/45" />
 
         <div className="relative z-10 max-w-4xl">
-          <h1 className="text-6xl sm:text-8xl lg:text-9xl text-white mb-3 leading-tight italic"
+          <h1 className="text-6xl sm:text-8xl lg:text-9xl text-white mb-6 leading-tight italic"
             style={{ fontFamily: "var(--font-display)", fontWeight: 300 }}>
             13 Eleven Events
           </h1>
-          <p className="text-sm sm:text-base uppercase tracking-[0.35em] text-[#AF8858] mb-4"
-            style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}>
-            1311 Events
-          </p>
           <p className="text-base sm:text-lg text-white/70 mb-12 italic"
             style={{ fontFamily: "var(--font-script)" }}>
             Your one-stop shop for event services in Hawaiʻi.
