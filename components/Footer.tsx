@@ -10,7 +10,6 @@ const navLinks = [
   { label: "Services", href: "/services" },
   { label: "Equipment Rentals", href: "/inventory" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Venues", href: "/venues" },
   { label: "Food & Beverage", href: "/seafood" },
   { label: "Journal", href: "/journal" },
   { label: "Cart", href: "/cart" },
