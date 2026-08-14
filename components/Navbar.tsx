@@ -41,27 +41,27 @@ export default function Navbar() {
         scrolled ? "bg-[#0D0D0C]/98 shadow-lg" : "bg-[#0D0D0C]"
       }`}
     >
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 flex items-center justify-between h-16 gap-3">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center h-[4.5rem] gap-4 lg:gap-8">
         {/* Logo */}
-        <Link href="/" className="shrink-0 flex items-center">
+        <Link href="/" className="relative z-10 shrink-0 flex items-center">
           <Image
             src={SITE_LOGO.src}
             alt={SITE_LOGO.alt}
             width={SITE_LOGO.width}
             height={SITE_LOGO.height}
-            className="w-auto object-contain brightness-0 invert max-h-[38px] xl:max-h-[46px]"
+            className="w-auto object-contain brightness-0 invert max-h-[30px] lg:max-h-[34px] xl:max-h-[40px] max-w-[110px] lg:max-w-[130px] xl:max-w-[150px]"
             style={{ width: "auto", height: "auto" }}
             priority
           />
         </Link>
 
-        {/* Desktop nav — visible lg+; shorter labels so all links fit including Venues */}
-        <ul className="hidden lg:flex items-center gap-0 flex-1 justify-center min-w-0 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        {/* Desktop nav — centered in its own column so it never overlaps the logo */}
+        <ul className="hidden lg:flex items-center justify-center gap-0.5 min-w-0 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden px-2">
           {navLinks.map((link) => (
             <li key={link.href} className="flex items-center shrink-0">
               <Link
                 href={link.href}
-                className="px-2 py-2 text-[10px] font-medium uppercase tracking-[0.1em] whitespace-nowrap leading-none transition-colors duration-150 lg:px-1.5 xl:px-2.5"
+                className="px-1.5 xl:px-2 py-2 text-[9px] xl:text-[10px] font-medium uppercase tracking-[0.08em] xl:tracking-[0.1em] whitespace-nowrap leading-none transition-colors duration-150"
                 style={{
                   fontFamily: "var(--font-body)",
                   color: pathname === link.href ? "#AF8858" : "rgba(255,255,255,0.7)",
@@ -76,7 +76,7 @@ export default function Navbar() {
         </ul>
 
         {/* CTA + Cart */}
-        <div className="hidden lg:flex items-center gap-2 shrink-0">
+        <div className="hidden lg:flex items-center gap-2 shrink-0 relative z-10 justify-self-end">
           <button
             type="button"
             onClick={toggleCart}
@@ -103,7 +103,7 @@ export default function Navbar() {
         </div>
 
         {/* Tablet / mobile controls (below lg) */}
-        <div className="lg:hidden flex items-center gap-1">
+        <div className="lg:hidden flex items-center gap-1 justify-self-end col-start-3">
           <button
             type="button"
             onClick={toggleCart}
