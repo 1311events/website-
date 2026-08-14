@@ -32,7 +32,7 @@ const venues = [
     cta: "Explore the Venue",
     href: "/contact",
     external: false,
-    image: null,
+    image: "/HanaKitchen.png",
     imageAlt: "Hana Kitchens Hawaiʻi",
   },
 ];
@@ -98,14 +98,18 @@ function VenueCard({ venue }: { venue: (typeof venues)[number] }) {
     </>
   );
 
+  const className =
+    "relative group overflow-hidden block cursor-pointer";
+  const style = { minHeight: "520px" };
+
   if (venue.external) {
     return (
       <a
         href={venue.href}
         target="_blank"
         rel="noopener noreferrer"
-        className="relative group overflow-hidden block cursor-pointer"
-        style={{ minHeight: "520px" }}
+        className={className}
+        style={style}
         aria-label={`Visit ${venue.name} website`}
       >
         {content}
@@ -114,44 +118,9 @@ function VenueCard({ venue }: { venue: (typeof venues)[number] }) {
   }
 
   return (
-    <div className="relative group overflow-hidden" style={{ minHeight: "520px" }}>
-      {venue.image ? (
-        <Image src={venue.image} alt={venue.imageAlt} fill sizes={SIZES.half} quality={IMAGE_QUALITY} className="object-cover" />
-      ) : (
-        <PlaceholderImg className="absolute inset-0" label={`${venue.name} photo`} />
-      )}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0C]/90 via-[#0D0D0C]/30 to-transparent" />
-      <div className="absolute bottom-0 left-0 right-0 p-8">
-        <p className="text-[10px] text-white/40 mb-2" style={{ fontFamily: "var(--font-body)" }}>
-          {venue.num}
-        </p>
-        <h2
-          className="text-3xl sm:text-4xl text-white mb-1 leading-tight"
-          style={{ fontFamily: "var(--font-display)", fontWeight: 300 }}
-        >
-          {venue.name}
-        </h2>
-        <p
-          className="text-[10px] uppercase tracking-[0.25em] text-white/45 mb-4"
-          style={{ fontFamily: "var(--font-body)" }}
-        >
-          {venue.location}
-        </p>
-        <p
-          className="text-sm text-white/55 leading-relaxed mb-6 max-w-sm"
-          style={{ fontFamily: "var(--font-body)" }}
-        >
-          {venue.description}
-        </p>
-        <Link
-          href={venue.href}
-          className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] px-6 py-3 border border-white/30 text-white hover:border-[#AF8858] hover:text-[#AF8858] transition-colors"
-          style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}
-        >
-          {venue.cta} <ArrowRight size={13} />
-        </Link>
-      </div>
-    </div>
+    <Link href={venue.href} className={className} style={style} aria-label={`${venue.cta} — ${venue.name}`}>
+      {content}
+    </Link>
   );
 }
 

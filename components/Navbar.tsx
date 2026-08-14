@@ -12,10 +12,10 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
   { label: "Services", href: "/services" },
-  { label: "Equipment Rentals", href: "/inventory" },
+  { label: "Rentals", href: "/inventory" },
   { label: "Gallery", href: "/gallery" },
   { label: "Venues", href: "/venues" },
-  { label: "Food & Beverage", href: "/seafood" },
+  { label: "F&B", href: "/seafood" },
   { label: "Contact", href: "/contact" },
 ] as const;
 
@@ -55,13 +55,13 @@ export default function Navbar() {
           />
         </Link>
 
-        {/* Desktop nav — centered (xl+ so labels stay on one line) */}
-        <ul className="hidden xl:flex items-center gap-0.5 flex-1 justify-center min-w-0">
+        {/* Desktop nav — visible lg+; shorter labels so all links fit including Venues */}
+        <ul className="hidden lg:flex items-center gap-0 flex-1 justify-center min-w-0 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           {navLinks.map((link) => (
             <li key={link.href} className="flex items-center shrink-0">
               <Link
                 href={link.href}
-                className="px-2.5 py-2 text-[10px] font-medium uppercase tracking-[0.12em] whitespace-nowrap leading-none transition-colors duration-150"
+                className="px-2 py-2 text-[10px] font-medium uppercase tracking-[0.1em] whitespace-nowrap leading-none transition-colors duration-150 lg:px-1.5 xl:px-2.5"
                 style={{
                   fontFamily: "var(--font-body)",
                   color: pathname === link.href ? "#AF8858" : "rgba(255,255,255,0.7)",
@@ -76,7 +76,7 @@ export default function Navbar() {
         </ul>
 
         {/* CTA + Cart */}
-        <div className="hidden xl:flex items-center gap-2 shrink-0">
+        <div className="hidden lg:flex items-center gap-2 shrink-0">
           <button
             type="button"
             onClick={toggleCart}
@@ -102,8 +102,8 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Tablet / mobile controls (below xl) */}
-        <div className="xl:hidden flex items-center gap-1">
+        {/* Tablet / mobile controls (below lg) */}
+        <div className="lg:hidden flex items-center gap-1">
           <button
             type="button"
             onClick={toggleCart}
@@ -132,7 +132,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="xl:hidden bg-[#0D0D0C] border-t border-white/10 px-6 pb-5 pt-3">
+        <div className="lg:hidden bg-[#0D0D0C] border-t border-white/10 px-6 pb-5 pt-3">
           <ul className="flex flex-col gap-1">
             {navLinks.map((link) => (
               <li key={link.href}>
