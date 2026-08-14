@@ -76,9 +76,9 @@ export default function ContactPage() {
               <li className="flex gap-4 items-start">
                 <Phone size={16} className="mt-0.5 shrink-0 text-[#AF8858]" />
                 <div>
-                  <a href="tel:+18082309090" className="text-sm text-white hover:text-[#AF8858] transition-colors"
+                  <a href="tel:+18086940952" className="text-sm text-white hover:text-[#AF8858] transition-colors"
                     style={{ fontFamily: "var(--font-body)" }}>
-                    (808) 230-9090
+                    (808) 694-0952
                   </a>
                 </div>
               </li>

@@ -12,7 +12,7 @@ import { ArrowRight } from "lucide-react";
 export const metadata: Metadata = {
   title: "1311 Events — Thirteen Eleven Events | Hawaii's #1 Event Company",
   description:
-    "1311 Events (Thirteen Eleven Events) — Hawaii's largest event rental & production company. Full-service coordination, luxury rentals, catering, bar services, and staffing. Based in Honolulu, HI. Call 808-225-9413.",
+    "1311 Events (Thirteen Eleven Events) — Hawaii's largest event rental & production company. Full-service coordination, luxury rentals, catering, bar services, and staffing. Based in Honolulu, HI. Call 808-694-0952.",
   alternates: { canonical: SITE_URL },
   openGraph: {
     type: "website",
@@ -72,7 +72,7 @@ const organizationJsonLd = {
   description:
     "1311 Events (13 Eleven Events) is Hawaiʻi's largest full-service event rental and production company, offering coordination, luxury rentals, catering, bar services, and staffing.",
   email: "info@1311events.com",
-  telephone: "+1-808-225-9413",
+  telephone: "+1-808-694-0952",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Honolulu",

@@ -87,9 +87,9 @@ export default function Footer() {
                 </p>
               </li>
               <li>
-                <a href="tel:+18082309090" className="text-xs text-white/50 hover:text-[#AF8858] transition-colors"
+                <a href="tel:+18086940952" className="text-xs text-white/50 hover:text-[#AF8858] transition-colors"
                   style={{ fontFamily: "var(--font-body)" }}>
-                  (808) 230-9090
+                  (808) 694-0952
                 </a>
               </li>
               <li>
