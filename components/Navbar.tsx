@@ -14,6 +14,7 @@ const navLinks = [
   { label: "Services", href: "/services" },
   { label: "Equipment Rentals", href: "/inventory" },
   { label: "Gallery", href: "/gallery" },
+  { label: "Venues", href: "/venues" },
   { label: "Food & Beverage", href: "/seafood" },
   { label: "Contact", href: "/contact" },
 ] as const;

@@ -4,14 +4,11 @@ import { ArrowRight, ExternalLink } from "lucide-react";
 import { IMAGE_QUALITY, SIZES } from "@/lib/image";
 import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  ...pageMetadata(
-    "/venues",
-    "Venues",
-    "Premier event venues in Hawaiʻi, curated by 13 Eleven Events."
-  ),
-  robots: { index: false, follow: false },
-};
+export const metadata = pageMetadata(
+  "/venues",
+  "Venues",
+  "Premier event venues in Hawaiʻi, curated by 13 Eleven Events."
+);
 
 const venues = [
   {
