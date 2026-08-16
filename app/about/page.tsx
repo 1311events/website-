@@ -91,7 +91,7 @@ export default function AboutPage() {
           </div>
           <div className="relative min-h-[400px] lg:min-h-0">
             <Image
-              src="/images/home/equipments.png"
+              src="/images/home/rentals.jpg"
               alt="13 Eleven Events luxury event rentals and equipment"
               fill
               className="object-cover"
