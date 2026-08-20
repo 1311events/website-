@@ -15,8 +15,8 @@ export default function InventoryItemImage({ item }: { item: InventoryItem }) {
   const src = candidates[index] ?? INVENTORY_PLACEHOLDER;
 
   return (
-    <div className="relative aspect-square w-full overflow-hidden bg-[#1c1c1a] border border-white/5 mb-5">
-      <div className="absolute inset-0 p-6 sm:p-8">
+    <div className="relative aspect-square w-full overflow-hidden bg-[#F7F7F4] mb-5">
+      <div className="absolute inset-0 p-4 sm:p-5">
         <Image
           src={src}
           alt={item.name}
