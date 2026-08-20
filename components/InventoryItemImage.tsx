@@ -15,21 +15,23 @@ export default function InventoryItemImage({ item }: { item: InventoryItem }) {
   const src = candidates[index] ?? INVENTORY_PLACEHOLDER;
 
   return (
-    <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#141412] mb-5">
-      <Image
-        src={src}
-        alt={item.name}
-        fill
-        className="object-cover"
-        sizes={SIZES.third}
-        quality={IMAGE_QUALITY}
-        onError={() => {
-          setIndex((current) => {
-            if (current >= candidates.length) return current;
-            return current + 1;
-          });
-        }}
-      />
+    <div className="relative aspect-square w-full overflow-hidden bg-[#1c1c1a] border border-white/5 mb-5">
+      <div className="absolute inset-0 p-6 sm:p-8">
+        <Image
+          src={src}
+          alt={item.name}
+          fill
+          className="object-contain"
+          sizes={SIZES.third}
+          quality={IMAGE_QUALITY}
+          onError={() => {
+            setIndex((current) => {
+              if (current >= candidates.length) return current;
+              return current + 1;
+            });
+          }}
+        />
+      </div>
       {index >= candidates.length && (
         <div className="absolute inset-0 flex items-end p-3 bg-gradient-to-t from-[#0D0D0C]/80 to-transparent">
           <p
