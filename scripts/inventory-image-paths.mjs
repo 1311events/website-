@@ -1,15 +1,12 @@
 /**
- * Print expected inventory photo paths for all catalog items.
- * Run: node scripts/inventory-image-paths.mjs > inventory-photo-checklist.txt
+ * Print where to save each inventory photo (public/images/inventory/...).
+ * Run: node scripts/inventory-image-paths.mjs
  */
 import { inventoryItems } from "../data/inventory.ts";
-import {
-  inventoryCategorySlug,
-  inventoryItemSlug,
-} from "../lib/inventory-images.ts";
+import { inventoryPhotoFilePath } from "../lib/inventory-images.ts";
+
+console.log("# Drop inventory photos in public/images/inventory/{category}/\n");
 
 for (const item of inventoryItems) {
-  const category = inventoryCategorySlug(item.category);
-  const slug = inventoryItemSlug(item.name);
-  console.log(`public/inventory/${category}/${slug}.jpg\t${item.category}\t${item.name}`);
+  console.log(`${inventoryPhotoFilePath(item)}\t${item.category}\t${item.name}`);
 }

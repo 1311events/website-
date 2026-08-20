@@ -3,7 +3,7 @@ export type InventoryItem = {
   price: string;
   qty: string;
   category: string;
-  /** Optional override, e.g. /inventory/tables/60-round-table.jpg */
+  /** Optional override, e.g. /images/inventory/tables/60-round-table.jpg */
   image?: string;
 };
 
