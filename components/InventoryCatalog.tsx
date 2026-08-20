@@ -8,6 +8,7 @@ import {
   type InventoryItem,
 } from "@/data/inventory";
 import { formatMoney, itemId, lineTotal, parsePrice, useCart } from "@/components/CartProvider";
+import InventoryItemImage from "@/components/InventoryItemImage";
 
 export default function InventoryCatalog() {
   const [active, setActive] = useState<(typeof INVENTORY_CATEGORIES)[number]>("All");
@@ -105,6 +106,7 @@ export default function InventoryCatalog() {
                         inCart ? "ring-1 ring-inset ring-[#AF8858]/40" : ""
                       }`}
                     >
+                      <InventoryItemImage item={item} />
                       <h3
                         className="text-lg text-white mb-5 leading-snug min-h-[2.5rem]"
                         style={{ fontFamily: "var(--font-display)", fontWeight: 300 }}
