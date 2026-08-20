@@ -1,53 +1,43 @@
 import type { InventoryItem } from "@/data/inventory";
 import {
-  INVENTORY_CATEGORY_FOLDERS,
-  INVENTORY_PHOTO_ROOT,
-} from "@/lib/inventory-photos";
+  INVENTORY_PHOTO_FOLDER,
+  inventoryPhotoFiles,
+} from "@/data/inventory-photos";
 
 export const INVENTORY_PLACEHOLDER = "/images/home/equipments.png";
 
-export function inventoryCategorySlug(category: string) {
-  return (
-    INVENTORY_CATEGORY_FOLDERS[category] ??
-    category
-      .toLowerCase()
-      .replace(/&/g, "and")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "")
-  );
+const EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"] as const;
+
+function photoUrl(filename: string) {
+  return `${INVENTORY_PHOTO_FOLDER}/${filename}`;
 }
 
-export function inventoryItemSlug(name: string) {
-  return name
-    .toLowerCase()
-    .replace(/['"]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-}
-
-/** URL path for a catalog item photo under public/images/inventory/ */
-export function inventoryImagePath(item: InventoryItem) {
-  if (item.image) return item.image;
-
-  const category = inventoryCategorySlug(item.category);
-  const slug = inventoryItemSlug(item.name);
-
-  return `${INVENTORY_PHOTO_ROOT}/${category}/${slug}.jpg`;
+function extensionVariants(filename: string) {
+  const dot = filename.lastIndexOf(".");
+  const base = dot > 0 ? filename.slice(0, dot) : filename;
+  return EXTENSIONS.map((ext) => photoUrl(`${base}${ext}`));
 }
 
 export function inventoryImageCandidates(item: InventoryItem) {
-  const category = inventoryCategorySlug(item.category);
-  const slug = inventoryItemSlug(item.name);
-  const base = `${INVENTORY_PHOTO_ROOT}/${category}/${slug}`;
+  const candidates: string[] = [];
 
-  const candidates = item.image ? [item.image] : [];
+  if (item.image) {
+    candidates.push(item.image);
+  }
 
-  return [...candidates, `${base}.jpg`, `${base}.jpeg`, `${base}.png`, `${base}.webp`];
+  const mapped = inventoryPhotoFiles[item.name];
+  if (mapped) {
+    if (mapped.includes(".")) {
+      candidates.push(photoUrl(mapped));
+    } else {
+      candidates.push(...EXTENSIONS.map((ext) => photoUrl(`${mapped}${ext}`)));
+    }
+  }
+
+  return candidates;
 }
 
-/** Filesystem path (for scripts) — drop photos here in the repo */
-export function inventoryPhotoFilePath(item: InventoryItem, ext = "jpg") {
-  const category = inventoryCategorySlug(item.category);
-  const slug = inventoryItemSlug(item.name);
-  return `public${INVENTORY_PHOTO_ROOT}/${category}/${slug}.${ext}`;
+export function inventoryImagePath(item: InventoryItem) {
+  const candidates = inventoryImageCandidates(item);
+  return candidates[0] ?? INVENTORY_PLACEHOLDER;
 }
