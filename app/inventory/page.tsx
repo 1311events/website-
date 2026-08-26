@@ -5,8 +5,7 @@ import InventoryCatalog from "@/components/InventoryCatalog";
 import { IMAGE_QUALITY, SIZES } from "@/lib/image";
 import { pageMetadata } from "@/lib/seo";
 
-/** Flip to true when the rental catalog is ready to go live. */
-const SHOW_CATALOG = false;
+const SHOW_CATALOG = true;
 
 export const metadata = SHOW_CATALOG
   ? pageMetadata(
