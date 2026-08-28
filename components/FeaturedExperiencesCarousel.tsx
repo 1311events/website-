@@ -14,7 +14,7 @@ const featuredEvents = [
     description:
       "A two-day culinary celebration bringing together iconic flavors, world-class talent, and the spirit of Italian hospitality.",
     tags: ["Event Production", "Catering", "Bar Services", "Staffing", "Culinary Experience", "Rentals"],
-    image: "/images/home/festa.png",
+    image: "/festaitaliam.jpeg",
   },
   {
     name: "Hawaiʻi Food and Wine Festival 2025",
@@ -22,7 +22,7 @@ const featuredEvents = [
     description:
       "A premier culinary experience bringing together celebrated chefs, local flavors, and elevated hospitality across Hawaiʻi.",
     tags: ["Event Coordination", "Bar Services", "Culinary Experience", "Rentals"],
-    image: "/gallery/hospitality-and-bar/Copy of 10-DSC09338.jpg",
+    image: "/foodfestival.jpeg",
   },
   {
     name: "Diner En Blanc Hawaiʻi 2025",
@@ -30,7 +30,7 @@ const featuredEvents = [
     description:
       "An elegant open-air dining experience in Honolulu, featuring refined cuisine, elevated service, and an unforgettable all-white celebration.",
     tags: ["Catering", "Bar Services", "Staffing", "Culinary Experience", "Rentals"],
-    image: "/gallery/outdoor-events/Copy of 1-DSC09625.jpg",
+    image: "/Diner En Blanc Hawaiʻi 2025.jpeg",
   },
 ];
 

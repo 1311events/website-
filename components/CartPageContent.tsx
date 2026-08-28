@@ -4,13 +4,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { formatMoney, lineTotal, useCart } from "@/components/CartProvider";
+import CartQuoteSummary from "@/components/CartQuoteSummary";
 
 export default function CartPageContent() {
   const router = useRouter();
   const {
     items,
     itemCount,
-    estimatedTotal,
+    quote,
     ready,
     removeItem,
     updateQuantity,
@@ -116,8 +117,6 @@ export default function CartPageContent() {
                     style={{ fontFamily: "var(--font-body)" }}
                   >
                     {line.price} each
-                    <span className="text-white/25 mx-2">·</span>
-                    Available: {line.availableQty}
                   </p>
                 </div>
 
@@ -166,19 +165,8 @@ export default function CartPageContent() {
           })}
         </ul>
 
-        <div className="flex items-center justify-between border border-white/10 px-6 py-5 mb-10">
-          <p
-            className="text-[10px] uppercase tracking-[0.25em] text-white/40"
-            style={{ fontFamily: "var(--font-body)" }}
-          >
-            Estimated total
-          </p>
-          <p
-            className="text-2xl text-white tabular-nums"
-            style={{ fontFamily: "var(--font-display)", fontWeight: 300 }}
-          >
-            {estimatedTotal !== null ? formatMoney(estimatedTotal) : "On request"}
-          </p>
+        <div className="mb-10">
+          <CartQuoteSummary quote={quote} />
         </div>
 
         <div className="border border-[#AF8858]/30 p-8 text-center">

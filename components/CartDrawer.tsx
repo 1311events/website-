@@ -4,13 +4,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { formatMoney, lineTotal, useCart } from "@/components/CartProvider";
+import CartQuoteSummary from "@/components/CartQuoteSummary";
 
 export default function CartDrawer() {
   const router = useRouter();
   const {
     items,
     itemCount,
-    estimatedTotal,
+    quote,
     ready,
     isOpen,
     closeCart,
@@ -161,12 +162,6 @@ export default function CartDrawer() {
                         >
                           {total !== null ? formatMoney(total) : "Quote"}
                         </p>
-                        <p
-                          className="text-[9px] text-white/30 mt-0.5"
-                          style={{ fontFamily: "var(--font-body)" }}
-                        >
-                          Avail: {line.availableQty}
-                        </p>
                       </div>
                     </div>
                   </li>
@@ -178,20 +173,7 @@ export default function CartDrawer() {
 
         {ready && items.length > 0 && (
           <div className="border-t border-white/10 px-6 py-5 space-y-3">
-            <div className="flex items-center justify-between">
-              <p
-                className="text-[10px] uppercase tracking-[0.2em] text-white/40"
-                style={{ fontFamily: "var(--font-body)" }}
-              >
-                Estimated total
-              </p>
-              <p
-                className="text-lg text-white tabular-nums"
-                style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}
-              >
-                {estimatedTotal !== null ? formatMoney(estimatedTotal) : "On request"}
-              </p>
-            </div>
+            <CartQuoteSummary quote={quote} compact />
             <button
               type="button"
               onClick={goToCart}

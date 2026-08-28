@@ -10,6 +10,16 @@ import {
   type ReactNode,
 } from "react";
 import type { InventoryItem } from "@/data/inventory";
+import {
+  computeRentalQuote,
+  type RentalQuote,
+} from "@/lib/rental-quote";
+
+export {
+  formatMoney,
+  lineTotal,
+  parsePrice,
+} from "@/lib/rental-quote";
 
 export type CartLine = {
   id: string;
@@ -24,6 +34,7 @@ type CartContextValue = {
   items: CartLine[];
   itemCount: number;
   estimatedTotal: number | null;
+  quote: RentalQuote;
   ready: boolean;
   addItem: (item: InventoryItem, quantity?: number) => void;
   removeItem: (id: string) => void;
@@ -43,27 +54,6 @@ export function itemId(
   item: Pick<InventoryItem, "category" | "name"> | Pick<CartLine, "category" | "name">
 ) {
   return `${item.category}::${item.name}`;
-}
-
-export function parsePrice(price: string): number | null {
-  if (!price || /tbd/i.test(price)) return null;
-  const match = price.replace(/,/g, "").match(/(\d+(?:\.\d+)?)/);
-  return match ? Number(match[1]) : null;
-}
-
-export function formatMoney(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: amount % 1 === 0 ? 0 : 2,
-    maximumFractionDigits: 2,
-  }).format(amount);
-}
-
-export function lineTotal(line: CartLine): number | null {
-  const unit = parsePrice(line.price);
-  if (unit === null) return null;
-  return unit * line.quantity;
 }
 
 function readStoredCart(): CartLine[] {
@@ -184,24 +174,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [items]
   );
 
-  const estimatedTotal = useMemo(() => {
-    if (!items.length) return null;
-    let total = 0;
-    let hasPriced = false;
-    for (const line of items) {
-      const lt = lineTotal(line);
-      if (lt === null) continue;
-      hasPriced = true;
-      total += lt;
-    }
-    return hasPriced ? total : null;
-  }, [items]);
+  const quote = useMemo(() => computeRentalQuote(items), [items]);
+  const estimatedTotal = quote.hasPricedItems ? quote.total : null;
 
   const value = useMemo(
     () => ({
       items,
       itemCount,
       estimatedTotal,
+      quote,
       ready,
       addItem,
       removeItem,
@@ -217,6 +198,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       items,
       itemCount,
       estimatedTotal,
+      quote,
       ready,
       addItem,
       removeItem,

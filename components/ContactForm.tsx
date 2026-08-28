@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { formatMoney, lineTotal, useCart } from "@/components/CartProvider";
+import CartQuoteSummary from "@/components/CartQuoteSummary";
+import { formatQuoteEmail } from "@/lib/rental-quote";
 
 type FormValues = {
   firstName: string;
@@ -39,7 +41,7 @@ export default function ContactForm({ compact = false }: ContactFormProps) {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const searchParams = useSearchParams();
-  const { items, estimatedTotal, clearCart } = useCart();
+  const { items, quote, clearCart } = useCart();
 
   const cartDetails = useMemo(() => {
     if (!items.length) return "";
@@ -48,12 +50,8 @@ export default function ContactForm({ compact = false }: ContactFormProps) {
       const totalLabel = total !== null ? ` = ${formatMoney(total)}` : "";
       return `• ${line.name} (${line.category}) — Qty: ${line.quantity} × ${line.price}${totalLabel}`;
     });
-    const totalLine =
-      estimatedTotal !== null
-        ? `\nEstimated total: ${formatMoney(estimatedTotal)}`
-        : "\nEstimated total: On request (includes TBD items)";
-    return ["Inventory cart selection:", ...lines, totalLine].join("\n");
-  }, [items, estimatedTotal]);
+    return ["Inventory cart selection:", ...lines, "", formatQuoteEmail(quote)].join("\n");
+  }, [items, quote]);
 
   const fromCart = searchParams.get("from") === "cart";
   const hasCartItems = items.length > 0;
@@ -268,22 +266,16 @@ export default function ContactForm({ compact = false }: ContactFormProps) {
               </li>
             ))}
           </ul>
-          {estimatedTotal !== null && (
-            <p
-              className="text-xs text-white pt-2 border-t border-white/10 flex justify-between"
-              style={{ fontFamily: "var(--font-body)" }}
-            >
-              <span>Estimated total</span>
-              <span className="text-[#AF8858]">{formatMoney(estimatedTotal)}</span>
-            </p>
-          )}
+          <div className="pt-3 border-t border-white/10">
+            <CartQuoteSummary quote={quote} compact />
+          </div>
         </div>
       )}
 
       {/* Order details */}
       <div>
         <label style={labelStyle}>Order Details</label>
-        <textarea {...register("orderDetails")} rows={hasCartItems ? 8 : 4}
+        <textarea {...register("orderDetails")} rows={hasCartItems ? 12 : 4}
           placeholder="Please provide details for your event (equipment types, counts, set up and breakdown time, etc.)"
           style={{ ...inputStyle, resize: "none" }}
           onFocus={(e) => (e.currentTarget.style.borderColor = "#AF8858")}
