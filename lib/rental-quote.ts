@@ -4,7 +4,7 @@ export const DELIVERY_PERCENT_THRESHOLD = 2500;
 export const DELIVERY_PERCENT = 0.2;
 
 export const DELIVERY_POLICY_COPY =
-  "$500 delivery for orders of $2,500 or less. Above $2,500, delivery is 20% of the rental total, not including tax.";
+  "Delivery is $500 for orders with a rental subtotal of $2,500 or less. For orders over $2,500, delivery is 20% of the rental subtotal, excluding tax.";
 
 export type QuoteLine = {
   price: string;
@@ -92,7 +92,7 @@ export function formatQuoteEmail(quote: RentalQuote): string {
   const lines = [
     `Rental subtotal: ${formatMoney(quote.subtotal)}`,
     `Delivery: ${formatMoney(quote.deliveryFee)}`,
-    `Delivery policy: $500 for orders of $2,500 or less; 20% of the rental total (not including tax) for orders above $2,500.`,
+    `Delivery policy: ${DELIVERY_POLICY_COPY}`,
     `Tax: ${formatMoney(quote.tax)}`,
     `Estimated total: ${formatMoney(quote.total)}`,
   ];
