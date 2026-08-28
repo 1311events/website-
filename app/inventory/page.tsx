@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import InventoryCatalog from "@/components/InventoryCatalog";
 import InventoryPriceNotice from "@/components/InventoryPriceNotice";
 import { IMAGE_QUALITY, SIZES } from "@/lib/image";
+import { DELIVERY_POLICY_COPY } from "@/lib/rental-quote";
 import { pageMetadata } from "@/lib/seo";
 
 const SHOW_CATALOG = true;
@@ -136,6 +137,12 @@ function CatalogPage() {
             style={{ fontFamily: "var(--font-body)" }}
           >
             Prices shown are examples only
+          </p>
+          <p
+            className="text-xs text-white/45 max-w-lg mx-auto mt-4 leading-relaxed"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
+            {DELIVERY_POLICY_COPY}
           </p>
         </div>
       </section>

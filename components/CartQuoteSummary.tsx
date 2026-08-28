@@ -1,6 +1,6 @@
 "use client";
 
-import { formatMoney, type RentalQuote } from "@/lib/rental-quote";
+import { DELIVERY_POLICY_COPY, formatMoney, type RentalQuote } from "@/lib/rental-quote";
 
 type CartQuoteSummaryProps = {
   quote: RentalQuote;
@@ -84,21 +84,17 @@ export default function CartQuoteSummary({ quote, compact = false }: CartQuoteSu
         </p>
       )}
       <Row label="Rental subtotal" value={formatMoney(quote.subtotal)} />
-      <Row
-        label="Delivery"
-        value={quote.deliveryFee === 0 ? "Free" : formatMoney(quote.deliveryFee)}
-        hint={
-          compact
-            ? undefined
-            : quote.deliveryFee === 0
-              ? "Complimentary on rental orders of $500 or more."
-              : "20% of rentals. Free when the rental subtotal is $500 or more."
-        }
-      />
+      <Row label="Delivery" value={formatMoney(quote.deliveryFee)} />
+      <p
+        className="text-[11px] text-white/45 leading-relaxed"
+        style={{ fontFamily: "var(--font-body)" }}
+      >
+        {DELIVERY_POLICY_COPY}
+      </p>
       <Row
         label="Tax"
         value={formatMoney(quote.tax)}
-        hint={compact ? undefined : "Applied to rentals plus delivery."}
+        hint={compact ? undefined : "Required tax, applied to rentals plus delivery."}
       />
       <Row label="Estimated total" value={formatMoney(quote.total)} emphasis />
       {quote.hasUnpriced && (

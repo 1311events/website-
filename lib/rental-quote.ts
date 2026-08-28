@@ -1,6 +1,10 @@
 export const HAWAII_GET_RATE = 0.04712;
-export const DELIVERY_FREE_THRESHOLD = 500;
+export const DELIVERY_FLAT_FEE = 500;
+export const DELIVERY_PERCENT_THRESHOLD = 2500;
 export const DELIVERY_PERCENT = 0.2;
+
+export const DELIVERY_POLICY_COPY =
+  "$500 delivery for orders of $2,500 or less. Above $2,500, delivery is 20% of the rental total, not including tax.";
 
 export type QuoteLine = {
   price: string;
@@ -70,9 +74,9 @@ export function computeRentalQuote(items: QuoteLine[]): RentalQuote {
   }
 
   const deliveryFee =
-    subtotal >= DELIVERY_FREE_THRESHOLD
-      ? 0
-      : roundMoney(subtotal * DELIVERY_PERCENT);
+    subtotal > DELIVERY_PERCENT_THRESHOLD
+      ? roundMoney(subtotal * DELIVERY_PERCENT)
+      : DELIVERY_FLAT_FEE;
   const taxable = roundMoney(subtotal + deliveryFee);
   const tax = roundMoney(taxable * HAWAII_GET_RATE);
   const total = roundMoney(taxable + tax);
@@ -87,9 +91,8 @@ export function formatQuoteEmail(quote: RentalQuote): string {
 
   const lines = [
     `Rental subtotal: ${formatMoney(quote.subtotal)}`,
-    `Delivery (free at $500+, otherwise 20% of rentals): ${
-      quote.deliveryFee === 0 ? "Free" : formatMoney(quote.deliveryFee)
-    }`,
+    `Delivery: ${formatMoney(quote.deliveryFee)}`,
+    `Delivery policy: $500 for orders of $2,500 or less; 20% of the rental total (not including tax) for orders above $2,500.`,
     `Tax: ${formatMoney(quote.tax)}`,
     `Estimated total: ${formatMoney(quote.total)}`,
   ];
