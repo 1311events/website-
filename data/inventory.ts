@@ -52,7 +52,7 @@ export const inventoryItems: InventoryItem[] = [
   { name: "Speed Rack", price: "$100", qty: "5", category: "Catering Equipment", image: "/images/inventory/SpeedRack.png" },
   { name: "Deep Fryer", price: "$250", qty: "3", category: "Catering Equipment", image: "/images/inventory/DeepFryer.png" },
   { name: "2\" Insert Pan", price: "$8", qty: "30", category: "Catering Equipment", image: "/images/inventory/2″InsertPan.png" },
-  { name: "4\" Insert Pan", price: "$8", qty: "30", category: "Catering Equipment" },
+  { name: "4\" Insert Pan", price: "$8", qty: "30", category: "Catering Equipment", image: "/images/inventory/4″InsertPan.png" },
   { name: "Sheet Pan", price: "$8", qty: "100", category: "Catering Equipment", image: "/images/inventory/SheetPan.png" },
   { name: "Wok Burner", price: "$80", qty: "2", category: "Catering Equipment", image: "/images/inventory/WokBurner.png" },
   { name: "Burner", price: "$80", qty: "4", category: "Catering Equipment", image: "/images/inventory/StandUpBurner.png" },

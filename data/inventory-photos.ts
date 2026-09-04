@@ -28,6 +28,7 @@ export const inventoryPhotoFiles: Record<string, string> = {
   "15' × 30' Band Shell Tent": "15′x30′BandShellTent.png",
   "2\" Half Pans": "2″HalfPan.png",
   "2\" Insert Pan": "2″InsertPan.png",
+  "4\" Insert Pan": "4″InsertPan.png",
   "20×20 White Peak Tent": "20x20WhitePeakTent.png",
   "3 Gallon Water Dispenser": "3GallonWaterDispenser.png",
   "30' × 25' Band Shell Tent": "30′x25′BandShellTent.png",
