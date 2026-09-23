@@ -160,6 +160,8 @@ export const inventoryPhotoFiles: Record<string, string> = {
   "Serving Tongs": "StainlessSteelServingTongs.png",
   "Sheet Pan": "SheetPan.png",
   "Speaker Set": "SpeakerSet.png",
+  "Stage Panel 4' × 8'": "StagePanel.png",
+  "White Resin Folding Chair": "WhiteResinFoldingChair.png",
   "Speed Rack": "SpeedRack.png",
   "Stainless Steel Dinner Fork": "StainlessSteelDinnerFork.png",
   "Stainless Steel Dinner Knife": "StainlessSteelDinnerKnife.png",

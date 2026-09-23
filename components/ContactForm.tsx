@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { formatMoney, lineTotal, useCart } from "@/components/CartProvider";
 import CartQuoteSummary from "@/components/CartQuoteSummary";
 import { formatQuoteEmail } from "@/lib/rental-quote";
+import { INQUIRY_EMAIL, inquiryMailtoHref } from "@/lib/contact-email";
 
 type FormValues = {
   firstName: string;
@@ -40,6 +41,7 @@ export default function ContactForm({ compact = false }: ContactFormProps) {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [mailtoHref, setMailtoHref] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const { items, quote, clearCart } = useCart();
 
@@ -73,6 +75,7 @@ export default function ContactForm({ compact = false }: ContactFormProps) {
   const onSubmit = async (data: FormValues) => {
     setSubmitting(true);
     setSubmitError(null);
+    setMailtoHref(null);
 
     try {
       const response = await fetch("/api/contact", {
@@ -90,6 +93,7 @@ export default function ContactForm({ compact = false }: ContactFormProps) {
       if (items.length) clearCart();
       setSubmitted(true);
     } catch (error) {
+      setMailtoHref(inquiryMailtoHref(data));
       setSubmitError(
         error instanceof Error ? error.message : "Unable to send your message. Please try again."
       );
@@ -302,9 +306,18 @@ export default function ContactForm({ compact = false }: ContactFormProps) {
         {submitting ? "Sending…" : "Get Started"}
       </button>
       {submitError && (
-        <p style={errStyle} className="text-center">
-          {submitError}
-        </p>
+        <div className="text-center space-y-2">
+          <p style={errStyle}>{submitError}</p>
+          {mailtoHref && (
+            <a
+              href={mailtoHref}
+              className="inline-block text-xs uppercase tracking-[0.18em] text-[#AF8858] hover:text-[#C5A070]"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              Email {INQUIRY_EMAIL} instead
+            </a>
+          )}
+        </div>
       )}
     </form>
   );

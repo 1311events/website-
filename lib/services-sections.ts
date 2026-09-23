@@ -42,7 +42,7 @@ export const serviceSections: ServiceSection[] = [
     description:
       "Intentional styling, curated aesthetics, and sophisticated details that transform spaces into unforgettable environments. From concept to install, we bring your vision to life.",
     image: "/images/home/designanddecor.jpg",
-    imageAlt: "Design and decor",
+    imageAlt: "Event tablescape with linens, chairs, and string lights",
     cta: { label: "Inquire Now", href: "/contact" },
   },
   {

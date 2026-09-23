@@ -40,6 +40,9 @@ async function normalize(file) {
   console.log("normalized", file);
 }
 
-const files = fs.readdirSync(dir).filter((f) => f.endsWith(".png"));
+const requested = process.argv.slice(2);
+const files = requested.length
+  ? requested.map((f) => path.basename(f))
+  : fs.readdirSync(dir).filter((f) => f.endsWith(".png"));
 for (const file of files) await normalize(file);
 console.log("done", files.length);

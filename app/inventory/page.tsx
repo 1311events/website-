@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import InventoryCatalog from "@/components/InventoryCatalog";
-import InventoryPriceNotice from "@/components/InventoryPriceNotice";
 import { IMAGE_QUALITY, SIZES } from "@/lib/image";
 import { DELIVERY_POLICY_COPY } from "@/lib/rental-quote";
 import { pageMetadata } from "@/lib/seo";
@@ -133,12 +132,6 @@ function CatalogPage() {
             equipment, and more. Add items to your cart and request a tailored quote.
           </p>
           <p
-            className="text-[10px] uppercase tracking-[0.22em] text-[#AF8858]/80 mt-6"
-            style={{ fontFamily: "var(--font-body)" }}
-          >
-            Prices shown are examples only
-          </p>
-          <p
             className="text-xs text-white/45 max-w-lg mx-auto mt-4 leading-relaxed"
             style={{ fontFamily: "var(--font-body)" }}
           >
@@ -147,7 +140,6 @@ function CatalogPage() {
         </div>
       </section>
 
-      <InventoryPriceNotice />
       <InventoryCatalog />
 
       <section className="bg-[#0D0D0C] border-t border-white/10 py-16">

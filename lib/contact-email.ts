@@ -83,6 +83,17 @@ export function buildContactEmailContent(data: ContactPayload) {
   };
 }
 
+export const INQUIRY_EMAIL = "info@1311events.com";
+
+export function inquiryMailtoHref(data: ContactPayload) {
+  const email = buildContactEmailContent(data);
+  const params = new URLSearchParams({
+    subject: email.subject,
+    body: email.text,
+  });
+  return `mailto:${INQUIRY_EMAIL}?${params.toString()}`;
+}
+
 export function isValidContactPayload(body: unknown): body is ContactPayload {
   if (!body || typeof body !== "object") return false;
   const data = body as Record<string, unknown>;
