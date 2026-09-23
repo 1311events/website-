@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import type { InventoryItem } from "@/data/inventory";
-import { SIZES } from "@/lib/image";
 import {
   INVENTORY_PLACEHOLDER,
   inventoryImageCandidates,
@@ -22,8 +21,10 @@ export default function InventoryItemImage({ item }: { item: InventoryItem }) {
           alt={item.name}
           fill
           className="object-contain"
-          sizes={SIZES.third}
-          quality={95}
+          sizes="(max-width: 640px) 90vw, 420px"
+          quality={100}
+          unoptimized
+
           onError={() => {
             setIndex((current) => {
               if (current >= candidates.length) return current;
