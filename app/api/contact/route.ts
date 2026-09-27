@@ -8,7 +8,7 @@ import { sendMicrosoftMail } from "@/lib/microsoft-mail";
 const RECIPIENT = process.env.CONTACT_RECIPIENT ?? "info@1311events.com";
 
 export async function POST(request: Request) {
-  if (!process.env.MICROSOFT_SMTP_USER || !process.env.MICROSOFT_SMTP_PASSWORD) {
+  if (!process.env.MICROSOFT_SMTP_USER?.trim() || !process.env.MICROSOFT_SMTP_PASSWORD?.trim()) {
     return NextResponse.json({ error: "Email service is not configured." }, { status: 500 });
   }
 
