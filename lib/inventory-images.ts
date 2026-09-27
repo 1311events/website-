@@ -8,8 +8,14 @@ export const INVENTORY_PLACEHOLDER = "/images/home/equipments.png";
 
 const EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"] as const;
 
+function encodeImagePath(path: string) {
+  const parts = path.split("/");
+  const file = parts.pop() ?? "";
+  return [...parts, encodeURIComponent(file)].join("/");
+}
+
 function photoUrl(filename: string) {
-  return `${INVENTORY_PHOTO_FOLDER}/${filename}`;
+  return encodeImagePath(`${INVENTORY_PHOTO_FOLDER}/${filename}`);
 }
 
 function extensionVariants(filename: string) {
@@ -22,7 +28,7 @@ export function inventoryImageCandidates(item: InventoryItem) {
   const candidates: string[] = [];
 
   if (item.image) {
-    candidates.push(item.image);
+    candidates.push(encodeImagePath(item.image));
   }
 
   const mapped = inventoryPhotoFiles[item.name];

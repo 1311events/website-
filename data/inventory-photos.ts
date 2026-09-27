@@ -50,7 +50,7 @@ export const inventoryPhotoFiles: Record<string, string> = {
   "6' Ivory Tabledrapes": "6′IvoryTabledrapesHq.png",
   "6' White Farm Table": "6′WhiteFarmTableHq.png",
   "6' White Tabledrapes": "6′WhiteTabledrapesHq.png",
-  "6\" B&B Plate": "6″B&BPlatePhotoHq.png",
+  "6\" B&B Plate": "6inch-BB-Plate.png",
   "60\" Round Table": "60″RoundTableHq.png",
   "66\" Round Table": "66″RoundTableHq.png",
   "72\" Round Table": "72″RoundTableHq.png",

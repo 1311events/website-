@@ -112,7 +112,7 @@ export const inventoryItems: InventoryItem[] = [
   { name: "Rose Gold Soup Spoon", price: "$2.15", qty: "1200", category: "Dishware & Glassware", image: "/images/inventory/RoseGoldSoupSpoon.png" },
   { name: "10\" Plate", price: "$1.65", qty: "1200", category: "Dishware & Glassware", image: "/images/inventory/10″Plate.png" },
   { name: "White 7.5\" Plate", price: "$1.75", qty: "1200", category: "Dishware & Glassware", image: "/images/inventory/White7.5″Plate.png" },
-  { name: "6\" B&B Plate", price: "$1.75", qty: "1200", category: "Dishware & Glassware", image: "/images/inventory/6″B&BPlatePhotoHq.png" },
+  { name: "6\" B&B Plate", price: "$1.75", qty: "1200", category: "Dishware & Glassware", image: "/images/inventory/6inch-BB-Plate.png" },
   { name: "Gold Beaded Charger Plates", price: "$8", qty: "200", category: "Dishware & Glassware", image: "/images/inventory/GoldBeadedChargerPlatesHq.png" },
   { name: "White Pasta Bowl", price: "$1.75", qty: "250", category: "Dishware & Glassware", image: "/images/inventory/WhitePastaBowlHq.png" },
   { name: "White Platters", price: "$12", qty: "100", category: "Dishware & Glassware", image: "/images/inventory/WhitePlattersHq.png" },
