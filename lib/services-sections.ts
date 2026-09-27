@@ -74,8 +74,8 @@ export const serviceSections: ServiceSection[] = [
     title: "Luxury Weddings, Corporate Events & Private Celebrations",
     description:
       "From intimate celebrations to large-scale productions, we design and execute weddings, milestone events, and private gatherings with creativity, precision, and aloha.",
-    image: "/images/home/weddingservice.jpg",
-    imageAlt: "Weddings and private celebrations",
+    image: "/gallery/luxury-receptions/75-DSC08228.jpg",
+    imageAlt: "Black-tie luxury celebration with champagne",
     cta: { label: "Inquire Now", href: "/contact" },
   },
 ];
