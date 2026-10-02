@@ -87,10 +87,7 @@ export const INQUIRY_EMAIL = "info@1311events.com";
 
 export function inquiryMailtoHref(data: ContactPayload) {
   const email = buildContactEmailContent(data);
-  const params = new URLSearchParams({
-    subject: email.subject,
-    body: email.text,
-  });
+  const params = new URLSearchParams({ subject: email.subject });
   return `mailto:${INQUIRY_EMAIL}?${params.toString()}`;
 }
 

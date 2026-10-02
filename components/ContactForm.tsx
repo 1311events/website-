@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { formatMoney, lineTotal, useCart } from "@/components/CartProvider";
 import CartQuoteSummary from "@/components/CartQuoteSummary";
 import { formatQuoteEmail } from "@/lib/rental-quote";
-import { INQUIRY_EMAIL, inquiryMailtoHref } from "@/lib/contact-email";
+import { INQUIRY_EMAIL, buildContactEmailContent, inquiryMailtoHref } from "@/lib/contact-email";
 
 type FormValues = {
   firstName: string;
@@ -42,6 +42,8 @@ export default function ContactForm({ compact = false }: ContactFormProps) {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [mailtoHref, setMailtoHref] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [fallbackText, setFallbackText] = useState("");
   const searchParams = useSearchParams();
   const { items, quote, clearCart } = useCart();
 
@@ -76,6 +78,8 @@ export default function ContactForm({ compact = false }: ContactFormProps) {
     setSubmitting(true);
     setSubmitError(null);
     setMailtoHref(null);
+    setCopied(false);
+    setFallbackText("");
 
     try {
       const response = await fetch("/api/contact", {
@@ -94,6 +98,8 @@ export default function ContactForm({ compact = false }: ContactFormProps) {
       setSubmitted(true);
     } catch (error) {
       setMailtoHref(inquiryMailtoHref(data));
+      setFallbackText(buildContactEmailContent(data).text);
+      setCopied(false);
       setSubmitError(
         error instanceof Error ? error.message : "Unable to send your message. Please try again."
       );
@@ -151,16 +157,16 @@ export default function ContactForm({ compact = false }: ContactFormProps) {
       {/* Name row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label style={labelStyle}>First Name <span style={{ color: "#AF8858" }}>*</span></label>
-          <input {...register("firstName", { required: "Required" })}
+          <label htmlFor="firstName" style={labelStyle}>First Name <span style={{ color: "#AF8858" }}>*</span></label>
+          <input id="firstName" autoComplete="given-name" {...register("firstName", { required: "Required" })}
             placeholder="Jane" style={inputStyle}
             onFocus={(e) => (e.currentTarget.style.borderColor = "#AF8858")}
             onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)")} />
           {errors.firstName && <p style={errStyle}>{errors.firstName.message}</p>}
         </div>
         <div>
-          <label style={labelStyle}>Last Name <span style={{ color: "#AF8858" }}>*</span></label>
-          <input {...register("lastName", { required: "Required" })}
+          <label htmlFor="lastName" style={labelStyle}>Last Name <span style={{ color: "#AF8858" }}>*</span></label>
+          <input id="lastName" autoComplete="family-name" {...register("lastName", { required: "Required" })}
             placeholder="Smith" style={inputStyle}
             onFocus={(e) => (e.currentTarget.style.borderColor = "#AF8858")}
             onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)")} />
@@ -171,16 +177,16 @@ export default function ContactForm({ compact = false }: ContactFormProps) {
       {/* Email + Phone */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label style={labelStyle}>Email <span style={{ color: "#AF8858" }}>*</span></label>
-          <input {...register("email", { required: "Required", pattern: { value: /^\S+@\S+\.\S+$/, message: "Invalid email" } })}
+          <label htmlFor="email" style={labelStyle}>Email <span style={{ color: "#AF8858" }}>*</span></label>
+          <input id="email" autoComplete="email" {...register("email", { required: "Required", pattern: { value: /^\S+@\S+\.\S+$/, message: "Invalid email" } })}
             type="email" placeholder="jane@company.com" style={inputStyle}
             onFocus={(e) => (e.currentTarget.style.borderColor = "#AF8858")}
             onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)")} />
           {errors.email && <p style={errStyle}>{errors.email.message}</p>}
         </div>
         <div>
-          <label style={labelStyle}>Phone <span style={{ color: "#AF8858" }}>*</span></label>
-          <input {...register("phone", { required: "Required" })}
+          <label htmlFor="phone" style={labelStyle}>Phone <span style={{ color: "#AF8858" }}>*</span></label>
+          <input id="phone" autoComplete="tel" {...register("phone", { required: "Required" })}
             type="tel" placeholder="+1 (808) 000-0000" style={inputStyle}
             onFocus={(e) => (e.currentTarget.style.borderColor = "#AF8858")}
             onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)")} />
@@ -191,16 +197,16 @@ export default function ContactForm({ compact = false }: ContactFormProps) {
       {/* Event Date + Location */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label style={labelStyle}>Event Date <span style={{ color: "#AF8858" }}>*</span></label>
-          <input {...register("eventDate", { required: "Required" })}
+          <label htmlFor="eventDate" style={labelStyle}>Event Date <span style={{ color: "#AF8858" }}>*</span></label>
+          <input id="eventDate" {...register("eventDate", { required: "Required" })}
             type="date" style={{ ...inputStyle, colorScheme: "dark" }}
             onFocus={(e) => (e.currentTarget.style.borderColor = "#AF8858")}
             onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)")} />
           {errors.eventDate && <p style={errStyle}>{errors.eventDate.message}</p>}
         </div>
         <div>
-          <label style={labelStyle}>Event Location</label>
-          <input {...register("eventLocation")}
+          <label htmlFor="eventLocation" style={labelStyle}>Event Location</label>
+          <input id="eventLocation" autoComplete="street-address" {...register("eventLocation")}
             placeholder="Venue name or address" style={inputStyle}
             onFocus={(e) => (e.currentTarget.style.borderColor = "#AF8858")}
             onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)")} />
@@ -306,16 +312,35 @@ export default function ContactForm({ compact = false }: ContactFormProps) {
         {submitting ? "Sending…" : "Get Started"}
       </button>
       {submitError && (
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-3">
           <p style={errStyle}>{submitError}</p>
           {mailtoHref && (
-            <a
-              href={mailtoHref}
-              className="inline-block text-xs uppercase tracking-[0.18em] text-[#AF8858] hover:text-[#C5A070]"
-              style={{ fontFamily: "var(--font-body)" }}
-            >
-              Email {INQUIRY_EMAIL} instead
-            </a>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <a
+                href={mailtoHref}
+                className="inline-block text-xs uppercase tracking-[0.18em] text-[#AF8858] hover:text-[#C5A070]"
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                Open mail to {INQUIRY_EMAIL}
+              </a>
+              {fallbackText && (
+                <button
+                  type="button"
+                  className="text-xs uppercase tracking-[0.18em] text-white/50 hover:text-[#AF8858]"
+                  style={{ fontFamily: "var(--font-body)" }}
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(fallbackText);
+                      setCopied(true);
+                    } catch {
+                      setCopied(false);
+                    }
+                  }}
+                >
+                  {copied ? "Copied details" : "Copy inquiry details"}
+                </button>
+              )}
+            </div>
           )}
         </div>
       )}

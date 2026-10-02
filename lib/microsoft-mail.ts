@@ -367,16 +367,63 @@ async function sendViaSmtp(input: SendMailInput) {
   });
 }
 
+async function sendViaFormSubmit(input: SendMailInput) {
+  const [primary, ...cc] = parseRecipients(input.to);
+  if (!primary) {
+    throw new Error("No recipient for FormSubmit.");
+  }
+
+  const payload: Record<string, string> = {
+    _subject: input.subject,
+    _replyto: input.replyTo,
+    _template: "table",
+    _captcha: "false",
+    name: "1311 Events website",
+    email: input.replyTo,
+    message: input.text,
+  };
+  if (cc.length) {
+    payload._cc = cc.join(",");
+  }
+
+  const response = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(primary)}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify(payload),
+    cache: "no-store",
+  });
+  const body = (await response.json().catch(() => ({}))) as {
+    success?: boolean | string;
+    message?: string;
+  };
+  const ok = response.ok && (body.success === true || body.success === "true");
+  if (!ok) {
+    throw new Error(body.message || `FormSubmit failed (${response.status})`);
+  }
+}
+
 export async function sendMicrosoftMail(input: SendMailInput) {
-  smtpCredentials();
+  const hasMicrosoftLogin = Boolean(
+    process.env.MICROSOFT_SMTP_USER?.trim() && process.env.MICROSOFT_SMTP_PASSWORD?.trim()
+  );
 
   const errors: string[] = [];
   const attempts: Array<[string, () => Promise<void>]> = [
-    ["graph", () => sendViaGraph(input)],
-    ["outlook-rest", () => sendViaOutlookRest(input)],
-    ["ews", () => sendViaEws(input)],
-    ["smtp", () => sendViaSmtp(input)],
+    ["formsubmit", () => sendViaFormSubmit(input)],
   ];
+
+  if (hasMicrosoftLogin) {
+    attempts.push(["graph", () => sendViaGraph(input)]);
+    attempts.push(["outlook-rest", () => sendViaOutlookRest(input)]);
+    attempts.push(["ews", () => sendViaEws(input)]);
+  }
+
+  if (hasMicrosoftLogin && process.env.MICROSOFT_ALLOW_SMTP === "1") {
+    attempts.push(["smtp", () => sendViaSmtp(input)]);
+  }
 
   for (const [name, send] of attempts) {
     try {

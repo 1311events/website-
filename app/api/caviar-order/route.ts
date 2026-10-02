@@ -8,10 +8,6 @@ import {
 import { sendMicrosoftMail } from "@/lib/microsoft-mail";
 
 export async function POST(request: Request) {
-  if (!process.env.MICROSOFT_SMTP_USER?.trim() || !process.env.MICROSOFT_SMTP_PASSWORD?.trim()) {
-    return NextResponse.json({ error: "Email service is not configured." }, { status: 500 });
-  }
-
   let body: unknown;
   try {
     body = await request.json();

@@ -234,9 +234,6 @@ export function caviarCustomerConfirmation() {
 
 export function caviarOrderMailtoHref(data: CaviarOrderPayload) {
   const email = buildCaviarOrderEmail(data);
-  const params = new URLSearchParams({
-    subject: email.subject,
-    body: email.text,
-  });
+  const params = new URLSearchParams({ subject: email.subject });
   return `mailto:${caviarSalesTo()}?${params.toString()}`;
 }
