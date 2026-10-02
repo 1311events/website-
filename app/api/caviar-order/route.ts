@@ -5,7 +5,7 @@ import {
   caviarSalesTo,
   isValidCaviarOrder,
 } from "@/lib/caviar-order";
-import { sendMicrosoftMail } from "@/lib/microsoft-mail";
+import { sendMicrosoftMail, publicMailError } from "@/lib/microsoft-mail";
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Caviar order email failed:", error);
     return NextResponse.json(
-      { error: "Unable to send your order request. Please try again." },
+      { error: publicMailError(error) },
       { status: 502 }
     );
   }

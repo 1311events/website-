@@ -3,7 +3,7 @@ import {
   buildContactEmailContent,
   isValidContactPayload,
 } from "@/lib/contact-email";
-import { sendMicrosoftMail } from "@/lib/microsoft-mail";
+import { sendMicrosoftMail, publicMailError } from "@/lib/microsoft-mail";
 
 const RECIPIENT = process.env.CONTACT_RECIPIENT ?? "info@1311events.com";
 
@@ -31,10 +31,7 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("Microsoft SMTP error:", error);
-    return NextResponse.json(
-      { error: "Unable to send your message. Please try again." },
-      { status: 502 }
-    );
+    return NextResponse.json({ error: publicMailError(error) }, { status: 502 });
   }
 
   return NextResponse.json({ success: true });

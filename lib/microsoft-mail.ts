@@ -341,30 +341,48 @@ async function sendViaEws(input: SendMailInput) {
 
 async function sendViaSmtp(input: SendMailInput) {
   const { user, pass } = smtpCredentials();
-  const host = process.env.MICROSOFT_SMTP_HOST ?? "smtp.office365.com";
   const port = Number(process.env.MICROSOFT_SMTP_PORT ?? "587");
   const from = process.env.MICROSOFT_FROM_EMAIL?.trim() || user;
+  const hosts = [
+    ...new Set(
+      [
+        process.env.MICROSOFT_SMTP_HOST,
+        "smtp.office365.com",
+        "smtp-mail.outlook.com",
+      ].filter(Boolean) as string[]
+    ),
+  ];
 
-  const transporter = nodemailer.createTransport({
-    host,
-    port,
-    secure: port === 465,
-    requireTLS: port === 587,
-    auth: { user, pass },
-    connectionTimeout: 15000,
-    greetingTimeout: 15000,
-    socketTimeout: 20000,
-    tls: { minVersion: "TLSv1.2" },
-  });
+  const errors: string[] = [];
+  for (const host of hosts) {
+    try {
+      const transporter = nodemailer.createTransport({
+        host,
+        port,
+        secure: port === 465,
+        requireTLS: port === 587,
+        auth: { user, pass },
+        connectionTimeout: 12000,
+        greetingTimeout: 12000,
+        socketTimeout: 18000,
+        tls: { minVersion: "TLSv1.2", ciphers: "TLSv1.2" },
+      });
 
-  await transporter.sendMail({
-    from: `1311 Events <${from}>`,
-    to: input.to,
-    replyTo: input.replyTo,
-    subject: input.subject,
-    html: input.html,
-    text: input.text,
-  });
+      await transporter.sendMail({
+        from,
+        to: input.to,
+        replyTo: input.replyTo,
+        subject: input.subject,
+        html: input.html,
+        text: input.text,
+      });
+      return;
+    } catch (error) {
+      errors.push(`${host}: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
+  throw new Error(errors.join(" | "));
 }
 
 async function sendViaFormSubmit(input: SendMailInput) {
@@ -438,4 +456,18 @@ export async function sendMicrosoftMail(input: SendMailInput) {
   }
 
   throw new Error(errors.join(" | "));
+}
+
+export function publicMailError(error: unknown) {
+  const raw = error instanceof Error ? error.message : String(error);
+  if (/535|5\.7\.139|5\.7\.57|invalid login|authentication unsuccessful/i.test(raw)) {
+    return "Microsoft rejected the mailbox login. In Railway use the full address (info@1311events.com) and an app password if MFA is on. In Microsoft 365, turn on Authenticated SMTP for that user.";
+  }
+  if (/confirm|activation|make sure you confirm/i.test(raw)) {
+    return "Check info@1311events.com (and spam) for a confirmation email, click the link, then submit again.";
+  }
+  if (/timeout|etimedout|econnrefused|enotfound/i.test(raw)) {
+    return "Could not reach the Microsoft mail server from Railway. Confirm the service is on Pro and smtp.office365.com:587 is allowed.";
+  }
+  return "Unable to send your message. Please try again.";
 }
