@@ -423,13 +423,49 @@ async function sendViaFormSubmit(input: SendMailInput) {
   }
 }
 
+async function sendViaResend(input: SendMailInput) {
+  const key = process.env.RESEND_API_KEY?.trim();
+  if (!key) {
+    throw new Error("RESEND_API_KEY is not set.");
+  }
+
+  const from =
+    process.env.RESEND_FROM_EMAIL?.trim() || "1311 Events <onboarding@resend.dev>";
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from,
+      to: parseRecipients(input.to),
+      reply_to: input.replyTo,
+      subject: input.subject,
+      html: input.html,
+      text: input.text,
+    }),
+    cache: "no-store",
+  });
+  const body = (await response.json().catch(() => ({}))) as { message?: string; id?: string };
+  if (!response.ok) {
+    throw new Error(body.message || `Resend failed (${response.status})`);
+  }
+}
+
 export async function sendMicrosoftMail(input: SendMailInput) {
   const hasMicrosoftLogin = Boolean(
     process.env.MICROSOFT_SMTP_USER?.trim() && process.env.MICROSOFT_SMTP_PASSWORD?.trim()
   );
+  const hasResend = Boolean(process.env.RESEND_API_KEY?.trim());
+  const hasGraphApp = Boolean(process.env.MICROSOFT_CLIENT_ID?.trim());
 
   const errors: string[] = [];
   const attempts: Array<[string, () => Promise<void>]> = [];
+
+  if (hasResend) {
+    attempts.push(["resend", () => sendViaResend(input)]);
+  }
 
   if (hasMicrosoftLogin) {
     attempts.push(["smtp", () => sendViaSmtp(input)]);
@@ -437,7 +473,7 @@ export async function sendMicrosoftMail(input: SendMailInput) {
 
   attempts.push(["formsubmit", () => sendViaFormSubmit(input)]);
 
-  if (hasMicrosoftLogin) {
+  if (hasGraphApp && hasMicrosoftLogin) {
     attempts.push(["graph", () => sendViaGraph(input)]);
     attempts.push(["outlook-rest", () => sendViaOutlookRest(input)]);
     attempts.push(["ews", () => sendViaEws(input)]);
@@ -466,7 +502,9 @@ export function publicMailError(error: unknown) {
   if (/confirm|activation|make sure you confirm/i.test(raw)) {
     return "Check info@1311events.com (and spam) for a confirmation email, click the link, then submit again.";
   }
-  if (/timeout|etimedout|econnrefused|enotfound/i.test(raw)) {
+  if (/resend/i.test(raw) && /api key|invalid|forbidden|401|403/i.test(raw)) {
+    return "Resend rejected the API key. Check RESEND_API_KEY in Railway.";
+  }
     return "Could not reach the Microsoft mail server from Railway. Confirm the service is on Pro and smtp.office365.com:587 is allowed.";
   }
   return "Unable to send your message. Please try again.";
