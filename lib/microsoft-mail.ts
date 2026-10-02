@@ -351,9 +351,9 @@ async function sendViaSmtp(input: SendMailInput) {
     secure: port === 465,
     requireTLS: port === 587,
     auth: { user, pass },
-    connectionTimeout: 4000,
-    greetingTimeout: 4000,
-    socketTimeout: 8000,
+    connectionTimeout: 15000,
+    greetingTimeout: 15000,
+    socketTimeout: 20000,
     tls: { minVersion: "TLSv1.2" },
   });
 
@@ -411,18 +411,18 @@ export async function sendMicrosoftMail(input: SendMailInput) {
   );
 
   const errors: string[] = [];
-  const attempts: Array<[string, () => Promise<void>]> = [
-    ["formsubmit", () => sendViaFormSubmit(input)],
-  ];
+  const attempts: Array<[string, () => Promise<void>]> = [];
+
+  if (hasMicrosoftLogin) {
+    attempts.push(["smtp", () => sendViaSmtp(input)]);
+  }
+
+  attempts.push(["formsubmit", () => sendViaFormSubmit(input)]);
 
   if (hasMicrosoftLogin) {
     attempts.push(["graph", () => sendViaGraph(input)]);
     attempts.push(["outlook-rest", () => sendViaOutlookRest(input)]);
     attempts.push(["ews", () => sendViaEws(input)]);
-  }
-
-  if (hasMicrosoftLogin && process.env.MICROSOFT_ALLOW_SMTP === "1") {
-    attempts.push(["smtp", () => sendViaSmtp(input)]);
   }
 
   for (const [name, send] of attempts) {
