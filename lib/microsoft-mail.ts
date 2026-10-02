@@ -18,9 +18,13 @@ function parseRecipients(to: string) {
 const OFFICE_PUBLIC_CLIENT_ID = "d3590ed6-52b3-4102-aeff-aad2292ab01c";
 const AZURE_CLI_CLIENT_ID = "04b07795-8ddb-461a-bbee-02f9e1bf7b46";
 
+function cleanEnv(value: string | undefined) {
+  return value?.trim().replace(/^['"]+|['"]+$/g, "").trim() ?? "";
+}
+
 function smtpCredentials() {
-  const user = process.env.MICROSOFT_SMTP_USER?.trim();
-  const pass = process.env.MICROSOFT_SMTP_PASSWORD?.trim();
+  const user = cleanEnv(process.env.MICROSOFT_SMTP_USER);
+  const pass = cleanEnv(process.env.MICROSOFT_SMTP_PASSWORD);
   if (!user || !pass) {
     throw new Error("Microsoft SMTP is not configured.");
   }
@@ -365,7 +369,7 @@ async function sendViaSmtp(input: SendMailInput) {
         connectionTimeout: 12000,
         greetingTimeout: 12000,
         socketTimeout: 18000,
-        tls: { minVersion: "TLSv1.2", ciphers: "TLSv1.2" },
+        tls: { minVersion: "TLSv1.2" },
       });
 
       await transporter.sendMail({
@@ -378,7 +382,9 @@ async function sendViaSmtp(input: SendMailInput) {
       });
       return;
     } catch (error) {
-      errors.push(`${host}: ${error instanceof Error ? error.message : String(error)}`);
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`SMTP AUTH failed for ${user} via ${host}:`, message);
+      errors.push(`${host}: ${message}`);
     }
   }
 
@@ -454,9 +460,7 @@ async function sendViaResend(input: SendMailInput) {
 }
 
 export async function sendMicrosoftMail(input: SendMailInput) {
-  const hasMicrosoftLogin = Boolean(
-    process.env.MICROSOFT_SMTP_USER?.trim() && process.env.MICROSOFT_SMTP_PASSWORD?.trim()
-  );
+  const hasMicrosoftLogin = Boolean(cleanEnv(process.env.MICROSOFT_SMTP_USER) && cleanEnv(process.env.MICROSOFT_SMTP_PASSWORD));
   const hasResend = Boolean(process.env.RESEND_API_KEY?.trim());
   const hasGraphApp = Boolean(process.env.MICROSOFT_CLIENT_ID?.trim());
 
@@ -505,6 +509,7 @@ export function publicMailError(error: unknown) {
   if (/resend/i.test(raw) && /api key|invalid|forbidden|401|403/i.test(raw)) {
     return "Resend rejected the API key. Check RESEND_API_KEY in Railway.";
   }
+  if (/timeout|etimedout|econnrefused|enotfound/i.test(raw)) {
     return "Could not reach the Microsoft mail server from Railway. Confirm the service is on Pro and smtp.office365.com:587 is allowed.";
   }
   return "Unable to send your message. Please try again.";
