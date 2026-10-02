@@ -8,8 +8,15 @@ type SendMailInput = {
   text: string;
 };
 
-/** Public Microsoft Office client — used only when MICROSOFT_CLIENT_ID is unset. */
+function parseRecipients(to: string) {
+  return to
+    .split(/[,;]/)
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
+
 const OFFICE_PUBLIC_CLIENT_ID = "d3590ed6-52b3-4102-aeff-aad2292ab01c";
+const AZURE_CLI_CLIENT_ID = "04b07795-8ddb-461a-bbee-02f9e1bf7b46";
 
 function smtpCredentials() {
   const user = process.env.MICROSOFT_SMTP_USER?.trim();
@@ -29,29 +36,74 @@ function escapeXml(value: string) {
     .replace(/'/g, "&apos;");
 }
 
+function clientIds() {
+  const configured = process.env.MICROSOFT_CLIENT_ID?.trim();
+  return [...new Set([configured, OFFICE_PUBLIC_CLIENT_ID, AZURE_CLI_CLIENT_ID].filter(Boolean) as string[])];
+}
+
 async function discoverTenantId(email: string) {
   const fromEnv = process.env.MICROSOFT_TENANT_ID?.trim();
   if (fromEnv) return fromEnv;
 
   const domain = email.split("@")[1];
-  if (!domain) return "organizations";
+  if (!domain) return "common";
 
   try {
     const response = await fetch(
       `https://login.microsoftonline.com/${encodeURIComponent(domain)}/v2.0/.well-known/openid-configuration`,
       { cache: "no-store" }
     );
-    if (!response.ok) return "organizations";
+    if (!response.ok) return "common";
     const body = (await response.json()) as { issuer?: string };
     const match = body.issuer?.match(/login\.microsoftonline\.com\/([^/]+)/);
-    return match?.[1] ?? "organizations";
+    return match?.[1] ?? "common";
   } catch {
-    return "organizations";
+    return "common";
   }
 }
 
-async function requestAccessToken(scope: string, clientId: string, clientSecret?: string) {
+async function requestV1Token(resource: string) {
   const { user, pass } = smtpCredentials();
+  const tenant = await discoverTenantId(user);
+  const errors: string[] = [];
+
+  for (const clientId of clientIds()) {
+    const params = new URLSearchParams({
+      grant_type: "password",
+      client_id: clientId,
+      resource,
+      username: user,
+      password: pass,
+    });
+
+    const response = await fetch(`https://login.microsoftonline.com/${tenant}/oauth2/token`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params,
+      cache: "no-store",
+    });
+    const body = (await response.json()) as {
+      access_token?: string;
+      error?: string;
+      error_description?: string;
+    };
+    if (response.ok && body.access_token) {
+      return body.access_token;
+    }
+    errors.push(`${clientId.slice(0, 8)}: ${body.error_description || body.error || response.status}`);
+  }
+
+  throw new Error(`v1 token failed for ${resource}: ${errors.join(" | ")}`);
+}
+
+async function requestV2Token(scope: string) {
+  const { user, pass } = smtpCredentials();
+  const clientId = process.env.MICROSOFT_CLIENT_ID?.trim();
+  const clientSecret = process.env.MICROSOFT_CLIENT_SECRET?.trim();
+  if (!clientId) {
+    throw new Error("MICROSOFT_CLIENT_ID is not set.");
+  }
+
   const tenant = await discoverTenantId(user);
   const params = new URLSearchParams();
   params.set("client_id", clientId);
@@ -78,51 +130,143 @@ async function requestAccessToken(scope: string, clientId: string, clientSecret?
     error_description?: string;
   };
   if (!response.ok || !body.access_token) {
-    throw new Error(body.error_description || body.error || "Token request failed.");
+    throw new Error(body.error_description || body.error || "v2 token request failed.");
   }
-  return body.access_token;
+  return { token: body.access_token, appOnly: Boolean(clientSecret) };
 }
 
 async function sendViaGraph(input: SendMailInput) {
   const { user } = smtpCredentials();
-  const clientId = process.env.MICROSOFT_CLIENT_ID?.trim() || OFFICE_PUBLIC_CLIENT_ID;
-  const clientSecret = process.env.MICROSOFT_CLIENT_SECRET?.trim();
+  const errors: string[] = [];
 
-  const token = clientSecret
-    ? await requestAccessToken("https://graph.microsoft.com/.default", clientId, clientSecret)
-    : await requestAccessToken("https://graph.microsoft.com/Mail.Send", clientId);
+  const attempts: Array<{ token: string; url: string }> = [];
 
-  const sendUrl = clientSecret
-    ? `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(user)}/sendMail`
-    : "https://graph.microsoft.com/v1.0/me/sendMail";
+  try {
+    const v2 = await requestV2Token(
+      process.env.MICROSOFT_CLIENT_SECRET?.trim()
+        ? "https://graph.microsoft.com/.default"
+        : "https://graph.microsoft.com/Mail.Send"
+    );
+    attempts.push({
+      token: v2.token,
+      url: v2.appOnly
+        ? `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(user)}/sendMail`
+        : "https://graph.microsoft.com/v1.0/me/sendMail",
+    });
+  } catch (error) {
+    errors.push(`v2: ${error instanceof Error ? error.message : String(error)}`);
+  }
 
-  const sendResponse = await fetch(sendUrl, {
+  try {
+    attempts.push({
+      token: await requestV1Token("https://graph.microsoft.com"),
+      url: "https://graph.microsoft.com/v1.0/me/sendMail",
+    });
+  } catch (error) {
+    errors.push(`v1: ${error instanceof Error ? error.message : String(error)}`);
+  }
+
+  if (attempts.length === 0) {
+    throw new Error(errors.join(" | "));
+  }
+
+  const payload = JSON.stringify({
+    message: {
+      subject: input.subject,
+      body: { contentType: "HTML", content: input.html },
+      toRecipients: parseRecipients(input.to).map((address) => ({ emailAddress: { address } })),
+      replyTo: [{ emailAddress: { address: input.replyTo } }],
+    },
+    saveToSentItems: true,
+  });
+
+  for (const attempt of attempts) {
+    const sendResponse = await fetch(attempt.url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${attempt.token}`,
+        "Content-Type": "application/json",
+      },
+      body: payload,
+      cache: "no-store",
+    });
+    if (sendResponse.ok) return;
+    errors.push(`send ${sendResponse.status}: ${(await sendResponse.text()).slice(0, 240)}`);
+  }
+
+  throw new Error(`Graph sendMail failed: ${errors.join(" | ")}`);
+}
+
+async function sendViaOutlookRest(input: SendMailInput) {
+  const token = await requestV1Token("https://outlook.office365.com");
+  const response = await fetch("https://outlook.office365.com/api/v2.0/me/sendmail", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      message: {
-        subject: input.subject,
-        body: { contentType: "HTML", content: input.html },
-        toRecipients: [{ emailAddress: { address: input.to } }],
-        replyTo: [{ emailAddress: { address: input.replyTo } }],
+      Message: {
+        Subject: input.subject,
+        Body: { ContentType: "HTML", Content: input.html },
+        ToRecipients: parseRecipients(input.to).map((Address) => ({ EmailAddress: { Address } })),
+        ReplyTo: [{ EmailAddress: { Address: input.replyTo } }],
       },
-      saveToSentItems: true,
+      SaveToSentItems: true,
     }),
     cache: "no-store",
   });
-
-  if (!sendResponse.ok) {
-    const detail = await sendResponse.text();
-    throw new Error(`Graph sendMail failed (${sendResponse.status}): ${detail.slice(0, 400)}`);
+  if (!response.ok) {
+    throw new Error(`Outlook REST failed (${response.status}): ${(await response.text()).slice(0, 300)}`);
   }
 }
 
-async function sendViaEws(input: SendMailInput) {
+async function requestRstToken() {
   const { user, pass } = smtpCredentials();
   const soap = `<?xml version="1.0" encoding="utf-8"?>
+<s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope"
+  xmlns:a="http://www.w3.org/2005/08/addressing"
+  xmlns:u="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+  <s:Header>
+    <a:Action s:mustUnderstand="1">http://schemas.xmlsoap.org/ws/2005/02/trust/RST/Issue</a:Action>
+    <a:To s:mustUnderstand="1">https://login.microsoftonline.com/rst2.srf</a:To>
+    <o:Security s:mustUnderstand="1" xmlns:o="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+      <o:UsernameToken>
+        <o:Username>${escapeXml(user)}</o:Username>
+        <o:Password>${escapeXml(pass)}</o:Password>
+      </o:UsernameToken>
+    </o:Security>
+  </s:Header>
+  <s:Body>
+    <trust:RequestSecurityToken xmlns:trust="http://schemas.xmlsoap.org/ws/2005/02/trust">
+      <wsp:AppliesTo xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <a:EndpointReference>
+          <a:Address>https://outlook.office365.com</a:Address>
+        </a:EndpointReference>
+      </wsp:AppliesTo>
+      <trust:KeyType>http://schemas.xmlsoap.org/ws/2005/05/identity/NoProofKey</trust:KeyType>
+      <trust:RequestType>http://schemas.xmlsoap.org/ws/2005/02/trust/Issue</trust:RequestType>
+    </trust:RequestSecurityToken>
+  </s:Body>
+</s:Envelope>`;
+
+  const response = await fetch("https://login.microsoftonline.com/rst2.srf", {
+    method: "POST",
+    headers: { "Content-Type": "application/soap+xml; charset=utf-8" },
+    body: soap,
+    cache: "no-store",
+  });
+  const text = await response.text();
+  const token = text.match(/<wsse:BinarySecurityToken[^>]*>([^<]+)<\/wsse:BinarySecurityToken>/i)?.[1]
+    ?? text.match(/<BinarySecurityToken[^>]*>([^<]+)<\/BinarySecurityToken>/i)?.[1];
+  if (!response.ok || !token) {
+    throw new Error(`RST2 failed (${response.status}): ${text.slice(0, 240)}`);
+  }
+  return token;
+}
+
+function ewsEnvelope(input: SendMailInput) {
+  return `<?xml version="1.0" encoding="utf-8"?>
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
   xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
@@ -140,7 +284,9 @@ async function sendViaEws(input: SendMailInput) {
           <t:Subject>${escapeXml(input.subject)}</t:Subject>
           <t:Body BodyType="HTML">${escapeXml(input.html)}</t:Body>
           <t:ToRecipients>
-            <t:Mailbox><t:EmailAddress>${escapeXml(input.to)}</t:EmailAddress></t:Mailbox>
+            ${parseRecipients(input.to)
+              .map((address) => `<t:Mailbox><t:EmailAddress>${escapeXml(address)}</t:EmailAddress></t:Mailbox>`)
+              .join("")}
           </t:ToRecipients>
           <t:ReplyTo>
             <t:Mailbox><t:EmailAddress>${escapeXml(input.replyTo)}</t:EmailAddress></t:Mailbox>
@@ -150,16 +296,25 @@ async function sendViaEws(input: SendMailInput) {
     </m:CreateItem>
   </soap:Body>
 </soap:Envelope>`;
+}
 
-  const clientId = process.env.MICROSOFT_CLIENT_ID?.trim() || OFFICE_PUBLIC_CLIENT_ID;
-  const auths: Array<[string, string]> = [["basic", `Basic ${Buffer.from(`${user}:${pass}`).toString("base64")}`]];
+async function sendViaEws(input: SendMailInput) {
+  const { user, pass } = smtpCredentials();
+  const soap = ewsEnvelope(input);
+  const auths: Array<[string, string]> = [
+    ["basic", `Basic ${Buffer.from(`${user}:${pass}`).toString("base64")}`],
+  ];
 
   try {
-    const token = await requestAccessToken("https://outlook.office365.com/EWS.AccessAsUser.All", clientId);
-    auths.unshift(["bearer", `Bearer ${token}`]);
+    auths.unshift(["v1", `Bearer ${await requestV1Token("https://outlook.office365.com")}`]);
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    console.error("EWS OAuth token failed:", message);
+    console.error("EWS v1 token failed:", error instanceof Error ? error.message : error);
+  }
+
+  try {
+    auths.unshift(["rst2", `Bearer ${await requestRstToken()}`]);
+  } catch (error) {
+    console.error("EWS RST2 token failed:", error instanceof Error ? error.message : error);
   }
 
   const errors: string[] = [];
@@ -169,6 +324,7 @@ async function sendViaEws(input: SendMailInput) {
       headers: {
         Authorization: authorization,
         "Content-Type": "text/xml; charset=utf-8",
+        SOAPAction: "http://schemas.microsoft.com/exchange/services/2006/messages/CreateItem",
       },
       body: soap,
       cache: "no-store",
@@ -195,9 +351,9 @@ async function sendViaSmtp(input: SendMailInput) {
     secure: port === 465,
     requireTLS: port === 587,
     auth: { user, pass },
-    connectionTimeout: 8000,
-    greetingTimeout: 8000,
-    socketTimeout: 12000,
+    connectionTimeout: 4000,
+    greetingTimeout: 4000,
+    socketTimeout: 8000,
     tls: { minVersion: "TLSv1.2" },
   });
 
@@ -217,6 +373,7 @@ export async function sendMicrosoftMail(input: SendMailInput) {
   const errors: string[] = [];
   const attempts: Array<[string, () => Promise<void>]> = [
     ["graph", () => sendViaGraph(input)],
+    ["outlook-rest", () => sendViaOutlookRest(input)],
     ["ews", () => sendViaEws(input)],
     ["smtp", () => sendViaSmtp(input)],
   ];
@@ -224,6 +381,7 @@ export async function sendMicrosoftMail(input: SendMailInput) {
   for (const [name, send] of attempts) {
     try {
       await send();
+      console.info(`Microsoft mail sent via ${name}`);
       return;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

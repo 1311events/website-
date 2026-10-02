@@ -19,6 +19,8 @@ const nextConfig: NextConfig = {
       { source: "/memoirs/:path*", destination: "https://memoirshawaii.com", permanent: true },
       { source: "/food-beverage", destination: "/seafood", permanent: true },
       { source: "/food-beverage/:path*", destination: "/seafood", permanent: true },
+      { source: "/caviar", destination: "/seafood", permanent: false },
+      { source: "/order-caviar", destination: "/seafood", permanent: false },
     ];
   },
   images: {
@@ -28,6 +30,22 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 60,
     // Cap disk cache to avoid unbounded growth on Railway's ephemeral filesystem.
     maximumDiskCacheSize: 50 * 1024 * 1024,
+  },
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=()",
+          },
+        ],
+      },
+    ];
   },
 };
 
