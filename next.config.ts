@@ -19,8 +19,8 @@ const nextConfig: NextConfig = {
       { source: "/memoirs/:path*", destination: "https://memoirshawaii.com", permanent: true },
       { source: "/food-beverage", destination: "/seafood", permanent: true },
       { source: "/food-beverage/:path*", destination: "/seafood", permanent: true },
-      { source: "/caviar", destination: "/seafood", permanent: false },
-      { source: "/order-caviar", destination: "/seafood", permanent: false },
+      { source: "/caviar", destination: "https://memoirshawaii.com", permanent: false },
+      { source: "/order-caviar", destination: "https://memoirshawaii.com", permanent: false },
     ];
   },
   images: {
